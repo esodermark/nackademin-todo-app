@@ -29,7 +29,8 @@ module.exports = {
             // req
             const body = {
                 title: req.body.title ? req.body.title : '',
-                done: req.body.done ? rereq.body.done : false
+                done: req.body.done ? req.body.done : false,
+                ownerId: req.user._id
             }
             // res
             const newTodo = await TodoModel.postTodo(body)
