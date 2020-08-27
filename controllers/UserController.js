@@ -1,10 +1,10 @@
 const UserModel = require('../models/UserModel')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+
 const secret = 'schhhhh, do not tell'
 
 module.exports = {
-
     createUserCallback: async (req, res) => {
         const { 
                 username, 
@@ -27,4 +27,26 @@ module.exports = {
             console.log(error)
         }
     },
+
+    loginUserCallback: async (req, res) => {
+        const {
+            username,
+            passwordAttempt
+        } = req.body
+
+        try {
+            const user = await UserModel.loginUser(username)
+            const success = await bcrypt.compare(passwordAttempt, user.password)
+            
+            if(success) {
+                const token = jwt.sign(user, secret)
+                res.json({token}).status(200) 
+            } else {
+                res.json('Wrong password')
+            }
+        } catch(error) {
+            res.json(error)
+            console.log(error)
+        }
+    }
 }
