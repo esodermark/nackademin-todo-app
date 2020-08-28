@@ -6,7 +6,7 @@ module.exports = {
         try {
             // res
             const todos = await TodoModel.getAllTodos()
-            res.json(todos)
+            res.json(todos.authTodos(req.user))
         } catch(error) {
             res.json('Todos could not be generated')
             console.log(error)
@@ -18,7 +18,9 @@ module.exports = {
             const id = req.params.id
             // res
             const todo = await TodoModel.getTodoById(id)
-            res.json(todo)
+            todo.isOwner(req.user) 
+            ? res.json(todo).status(200) 
+            : res.sendStatus(401)
         } catch(error) {
             res.json('Something went wrong')
             console.log(error)

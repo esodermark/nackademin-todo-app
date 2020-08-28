@@ -5,9 +5,9 @@ const auth = require('../middleware/auth')
 const router = new Router()
 
 
-router.get('/todo', TodoController.getAllTodosCallback)
+router.get('/todo', auth.user, TodoController.getAllTodosCallback)
 
-router.get('/todo/:id', TodoController.getTodoByIdCallback)
+router.get('/todo/:id', auth.user, TodoController.getTodoByIdCallback)
 
 router.post('/todo', auth.user, TodoController.postTodoCallback)
 
