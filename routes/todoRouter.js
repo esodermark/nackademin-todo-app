@@ -11,9 +11,9 @@ router.get('/todo/:id', auth.user, TodoController.getTodoByIdCallback)
 
 router.post('/todo', auth.user, TodoController.postTodoCallback)
 
-router.patch('/todo/:id', TodoController.updateTodoByIdCallback)
+router.patch('/todo/:id', auth.user, TodoController.updateTodoByIdCallback)
 
-router.delete('/todo/:id', TodoController.deleteTodoByIdCallback)
+router.delete('/todo/:id', auth.user, TodoController.deleteTodoByIdCallback)
 
 
 

@@ -47,12 +47,18 @@ module.exports = {
             // req
             const id = req.params.id
             const body = {
-                title: req.body.title,
-                done: req.body.done
+                title: req.body.title ? req.body.title : '',
+                done: req.body.done ? req.body.done : false,
+                ownerId: req.user._id
             }
             // res
-            const numUpdated = await TodoModel.updateTodoById(id, body)
-            res.json(`${numUpdated} todo was updated`)    
+            const todo = await TodoModel.getTodoById(id)
+            if(todo.isOwner(req.user)) {
+                const numUpdated = await TodoModel.updateTodoById(id, body)
+                res.json(`${numUpdated} todo was updated`).status(200)
+            } else {
+                res.sendStatus(401)
+            }
         } catch(error) { 
             res.json('Todo could not be updated')
             console.log(error)
@@ -63,8 +69,13 @@ module.exports = {
             // req
             const id = req.params.id
             // res
-            const numDeleted = await TodoModel.deleteTodoById(id)
-            res.json(`${numDeleted} todo was deleted`)    
+            const todo = await TodoModel.getTodoById(id)
+            if(todo.isOwner(req.user)) {
+                const numDeleted = await TodoModel.deleteTodoById(id)
+                res.json(`${numDeleted} todo was deleted`).status(200)
+            } else {
+                res.sendStatus(401)
+            }   
         } catch(error) { 
             res.json('Todo could not be deleted')
             console.log(error)

@@ -1,6 +1,6 @@
 const ROLE = require('./Roles')
 
-function canReadTodo(user, todo) {
+function isOwner(user, todo) {
     return (
         user.role === ROLE.ADMIN ||
         todo.ownerId === user._id
@@ -13,6 +13,6 @@ function readAuthorizedTodos(user, todos) {
 }
 
 module.exports = {
-    canReadTodo,
+    isOwner,
     readAuthorizedTodos
 }

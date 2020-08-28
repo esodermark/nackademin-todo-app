@@ -1,6 +1,5 @@
 const db = require('../database/dbConnection')
 const permissions = require('../permissions/todoPermissions');
-const todoPermissions = require('../permissions/todoPermissions');
 
 module.exports = {
     getAllTodos() {
@@ -9,8 +8,8 @@ module.exports = {
                 if (err) reject(err)
                 resolve({
                     ...todos,
-                    authTodos(userId) {
-                        return permissions.readAuthorizedTodos(userId, todos)
+                    authTodos(user) {
+                        return permissions.readAuthorizedTodos(user, todos)
                     }
                 })
             })
@@ -22,8 +21,8 @@ module.exports = {
                 if (err) reject(err)
                 resolve({
                     ...todo,
-                    isOwner(userId) {
-                       return permissions.canReadTodo(userId, todo)
+                    isOwner(user) {
+                       return permissions.isOwner(user, todo[0])
                     }
                 })
             })
@@ -39,7 +38,7 @@ module.exports = {
     },
     updateTodoById(id, body) {
         return new Promise((resolve, reject) => {
-            db.todos.update({ _id: id }, {title: body.title, done: body.done}, {}, function (err, numUpdated) {
+            db.todos.update({ _id: id }, {title: body.title, done: body.done, ownerId: body.ownerId}, {}, function (err, numUpdated) {
                 if (err) reject(err)
                 resolve(numUpdated)
             })
