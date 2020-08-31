@@ -12,7 +12,12 @@ function readAuthorizedTodos(user, todos) {
     return todos.filter(todo => todo.ownerId === user._id)
 }
 
+function canCreateUser(user) {
+    return user.role === ROLE.ADMIN
+}
+
 module.exports = {
     isOwner,
-    readAuthorizedTodos
+    readAuthorizedTodos,
+    canCreateUser
 }
