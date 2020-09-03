@@ -1,5 +1,5 @@
-// const TodoListModel = require('../models/TodoListModel')
-// const TodoListController = require('../models/TodoListController')
+const TodoListModel = require('../models/TodoListModel')
+const TodoListController = require('../models/TodoListController')
 const UserModel = require('../models/UserModel')
 const UserController = require('../controllers/UserController')
 
@@ -15,10 +15,21 @@ require('dotenv').config()
 describe('todoList Unit Tests', () => {
     this.currentTest = {}
     beforeEach(async () => {
-        // TodoListModel.clear()
+        TodoListModel.clear()
+
         await generateTestUser()
         const token = await generateToken()
         this.currentTest.token = token
+    })
+
+    it('should create a todoList', () => {
+        const todoList = {
+            title: 'Helgaktiviteter',
+            todos: []
+        }
+
+        const createdTodoList = await TodoListModel.postTodoList(todoList)
+        createdTodoList.title.should.equal('Helgaktiviteter')
     })
 })
 
