@@ -8,6 +8,7 @@ const secret = 'schhhhh, do not tell'
 module.exports = {
     createUserCallback: async (req, res) => {
         if(!permissions.canCreateUser(req.user)) {return res.sendStatus(401)}
+        
         const { 
                 username, 
                 password, 

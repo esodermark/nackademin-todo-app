@@ -14,6 +14,5 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use('/', router.todoRouter)
 app.use('/', router.userRouter)
 
-// Start Server
-const PORT = 3000
-app.listen(PORT, () => console.log(`Server started at port ${PORT}`))
+
+module.exports = app
