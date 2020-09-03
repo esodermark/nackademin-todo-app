@@ -22,7 +22,7 @@ describe('todoList Unit Tests', () => {
         this.currentTest.token = token
     })
 
-    it('should create a todoList', () => {
+    it('should create a todoList', async () => {
         const todoList = {
             title: 'Helgaktiviteter',
             todos: []
@@ -30,6 +30,21 @@ describe('todoList Unit Tests', () => {
 
         const createdTodoList = await TodoListModel.postTodoList(todoList)
         createdTodoList.title.should.equal('Helgaktiviteter')
+    })
+
+    it('should update todoList title by id', async () => {
+        const todoList = {
+            title: 'Helgaktiviteter',
+            todos: [],
+            id: '1'
+        }
+        await TodoListModel.postTodoList(todoList)
+
+        const title = 'Göra i helgen'
+        const id = '1'
+
+        const updatedTodoList = await TodoListModel.updateTodoListTitleById(id, title)
+        updatedTodoList.title.should.equal('Göra i helgen')
     })
 })
 
