@@ -27,7 +27,8 @@ describe('todoList Unit Tests', () => {
     it('should create a todoList', async () => {
         const todoList = {
             title: 'Helgaktiviteter',
-            todos: []
+            todos: [],
+            ownerId: this.currentTest.user._id
         }
 
         const createdTodoList = await TodoListModel.postTodoList(todoList)
@@ -38,6 +39,7 @@ describe('todoList Unit Tests', () => {
         const newTodoList = {
             title: 'Helgaktiviteter',
             todos: [],
+            ownerId: this.currentTest.user._id,
             id: '1'
         }
         await TodoListModel.postTodoList(newTodoList)
@@ -52,6 +54,7 @@ describe('todoList Unit Tests', () => {
         const newTodoList = {
             title: 'Helgaktiviteter',
             todos: [],
+            ownerId: this.currentTest.user._id,
             id: '1'
         }
         await TodoListModel.postTodoList(newTodoList)
