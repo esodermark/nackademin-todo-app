@@ -32,16 +32,30 @@ describe('todoList Unit Tests', () => {
         createdTodoList.title.should.equal('Helgaktiviteter')
     })
 
-    it('should update todoList title by id', async () => {
-        const todoList = {
+    it('should get a todoList by id', async () => {
+        const newTodoList = {
             title: 'Helgaktiviteter',
             todos: [],
             id: '1'
         }
-        await TodoListModel.postTodoList(todoList)
+        await TodoListModel.postTodoList(newTodoList)
+
+        const todoList = await TodoListModel.getTodoListById(newTodoList.id)
+        todoList.should.eql(
+            newTodoList
+        )
+    })
+
+    it('should update todoList title by id', async () => {
+        const newTodoList = {
+            title: 'Helgaktiviteter',
+            todos: [],
+            id: '1'
+        }
+        await TodoListModel.postTodoList(newTodoList)
 
         const title = 'Göra i helgen'
-        const id = '1'
+        const id = newTodoList.id
 
         const updatedTodoList = await TodoListModel.updateTodoListTitleById(id, title)
         updatedTodoList.title.should.equal('Göra i helgen')
