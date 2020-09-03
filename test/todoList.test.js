@@ -45,9 +45,8 @@ describe('todoList Unit Tests', () => {
         await TodoListModel.postTodoList(newTodoList)
 
         const todoList = await TodoListModel.getTodoListById(newTodoList.id)
-        todoList.should.eql(
-            newTodoList
-        )
+        todoList.todoList.should.eql(newTodoList)
+        todoList.isOwner(this.currentTest.user).should.equal(true)
     })
 
     it('should update todoList title by id', async () => {
