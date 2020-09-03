@@ -17,9 +17,11 @@ describe('todoList Unit Tests', () => {
     beforeEach(async () => {
         TodoListModel.clear()
 
-        await generateTestUser()
+        const user = await generateTestUser()
         const token = await generateToken()
+
         this.currentTest.token = token
+        this.currentTest.user = user
     })
 
     it('should create a todoList', async () => {
@@ -69,7 +71,8 @@ async function generateTestUser() {
     const password = process.env['HASHEDPASSWORD_TEST']
     const role =  process.env['ROLE_TEST']
 
-    await UserModel.createUser(username, password, role)
+    const user = await UserModel.createUser(username, password, role)
+    return user
 }
 
 async function generateToken() {
