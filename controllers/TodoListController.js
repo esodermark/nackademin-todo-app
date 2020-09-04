@@ -31,5 +31,23 @@ module.exports = {
             res.json('Something went wrong')
             console.log(error)
         }  
-    }
+    },
+    updateTodoListTitleByIdCallback: async (req, res) => {
+        console.log('update')
+        try {
+            const id = req.params.id
+            const title = req.body.title ? req.body.title : ''
+
+            const todoList = await TodoListModel.getTodoListById(id)
+            if(todoList.isOwner(req.user)) {
+                const numUpdated = await TodoListModel.updateTodoListTitleById(id, title)
+                res.json(numUpdated).status(200)
+            } else {
+                res.sendStatus(401)
+            }
+        } catch(error) { 
+            res.json('Todo could not be updated')
+            console.log(error)
+        }
+    },
 }

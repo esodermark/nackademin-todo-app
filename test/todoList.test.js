@@ -27,7 +27,6 @@ describe('todoList Unit Tests', () => {
         this.currentTest.user = user
     })
 
-
     it('should create a todoList', async function() {
         const newTodoList = await generateTodoList(this.test.user._id)
 
@@ -100,11 +99,12 @@ describe('todoList Integration Tests', () => {
         .set('Authorization', `Bearer ${this.test.token}`)
         .set('Content-Type', `application/json`)
         .send(newTodoList)
-        .end((err, res) => {
+        .send((err, res) => {
             expect(res).to.have.status(200)
             expect(res).to.be.json
             expect(res.body).to.have.keys('title', 'ownerId', '_id')
         })
+
     })
 
 
@@ -116,7 +116,7 @@ describe('todoList Integration Tests', () => {
         .get(`/todoList/${newTodoList._id}`)
         .set('Authorization', `Bearer ${this.test.token}`)
         .set('Content-Type', `application/json`)
-        .end((err, res) => {
+        .send((err, res) => {
             expect(res).to.have.status(200)
             expect(res).to.be.json
             expect(res.body.todoList).to.have.keys(Object.keys(newTodoList))
@@ -124,18 +124,20 @@ describe('todoList Integration Tests', () => {
         })
     })
 
-
     it('should update a todoList title', async function () {
         const newTodoList = await generateTodoList(this.test.user._id)
+
+        console.log(newTodoList)
 
         request(app)
         .patch(`/todoList/${newTodoList._id}`)
         .set('Authorization', `Bearer ${this.test.token}`)
         .set('Content-Type', `application/json`)
-        .end((err, res) => {
+        .send(newTodoList)
+        .send((err, res) => {
             expect(res).to.have.status(200)
             expect(res).to.be.json
-            expect(res.body.numUpdated).to.be(1)
+            expect(res.body).to.equal(1)
         })
     })
 })
@@ -195,8 +197,4 @@ async function tryFetchDeletedTodos(todoListId) {
     const todoList = await TodoListModel.getTodoListById(todoListId)
 
     return todoList.getTodos(todoListId)
-}
-
-async function generateKeysToArray() {
-
 }
