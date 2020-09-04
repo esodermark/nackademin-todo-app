@@ -4,8 +4,7 @@ const auth = require('../middleware/auth')
 
 const router = new Router()
 
-
-// router.get('/todoList/:id', auth.user, TodoListController.getTodoListByIdCallback)
+router.get('/todoList/:id', auth.user, TodoListController.getTodoListByIdCallback)
 
 router.post('/todoList', auth.user, TodoListController.postTodoListCallback)
 

@@ -112,14 +112,14 @@ describe('todoList Integration Tests', () => {
         const todos = await generateTodos(3, newTodoList._id, this.test.user._id)
 
         request(app)
-        .get(`todoList/${newTodoList._id}`)
+        .get(`/todoList/${newTodoList._id}`)
         .set('Authorization', `Bearer ${this.test.token}`)
         .set('Content-Type', `application/json`)
         .end((err, res) => {
             expect(res).to.have.status(200)
             expect(res).to.be.json
             expect(res.body.todoList).to.have.keys(Object.keys(newTodoList))
-            expect(res.body.todos).to.have.keys(Object.keys(todos[0]))
+            expect(res.body.todos[0]).to.have.keys(Object.keys(todos[0]))
         })
     })
 })

@@ -1,5 +1,9 @@
-{"title":"Todo Title 0","done":false,"ownerId":"uTIfauf1brt3paSW","listId":"1","_id":0}
-{"title":"Todo Title 1","done":false,"ownerId":"uTIfauf1brt3paSW","listId":"1","_id":1}
+{"title":"Todo Title 1","done":false,"ownerId":"dhs6fU4thXdoCrJ7","listId":"1","_id":1}
+{"title":"Todo Title 2","done":false,"ownerId":"dhs6fU4thXdoCrJ7","listId":"1","_id":2}
+{"$$deleted":true,"_id":1}
+{"$$deleted":true,"_id":2}
+{"title":"Todo Title 0","done":false,"ownerId":"M1XWMUKZXowHexVh","listId":"1","_id":0}
+{"title":"Todo Title 1","done":false,"ownerId":"M1XWMUKZXowHexVh","listId":"1","_id":1}
 {"$$deleted":true,"_id":0}
 {"$$deleted":true,"_id":1}
 {"title":"Todo Title 0","done":false,"listId":"1","_id":0}
@@ -8,6 +12,6 @@
 {"$$deleted":true,"_id":0}
 {"$$deleted":true,"_id":1}
 {"$$deleted":true,"_id":2}
-{"title":"Todo Title 0","done":false,"ownerId":"ab9pYvFjBnq83jBc","listId":"1","_id":0}
-{"title":"Todo Title 1","done":false,"ownerId":"ab9pYvFjBnq83jBc","listId":"1","_id":1}
-{"title":"Todo Title 2","done":false,"ownerId":"ab9pYvFjBnq83jBc","listId":"1","_id":2}
+{"title":"Todo Title 0","done":false,"ownerId":"s13w1ATwGeC4oUAw","listId":"1","_id":0}
+{"title":"Todo Title 1","done":false,"ownerId":"s13w1ATwGeC4oUAw","listId":"1","_id":1}
+{"title":"Todo Title 2","done":false,"ownerId":"s13w1ATwGeC4oUAw","listId":"1","_id":2}
