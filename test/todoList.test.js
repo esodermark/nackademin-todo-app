@@ -89,6 +89,7 @@ describe('todoList Integration Tests', () => {
         this.currentTest.user = user
     })
 
+
     it('should create a todoList', async function () {
         const newTodoList = {
             title: 'Todo List Title'
@@ -120,6 +121,21 @@ describe('todoList Integration Tests', () => {
             expect(res).to.be.json
             expect(res.body.todoList).to.have.keys(Object.keys(newTodoList))
             expect(res.body.todos[0]).to.have.keys(Object.keys(todos[0]))
+        })
+    })
+
+
+    it('should update a todoList title', async function () {
+        const newTodoList = await generateTodoList(this.test.user._id)
+
+        request(app)
+        .patch(`/todoList/${newTodoList._id}`)
+        .set('Authorization', `Bearer ${this.test.token}`)
+        .set('Content-Type', `application/json`)
+        .end((err, res) => {
+            expect(res).to.have.status(200)
+            expect(res).to.be.json
+            expect(res.body.numUpdated).to.be(1)
         })
     })
 })
