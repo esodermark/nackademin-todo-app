@@ -12,6 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 // Routes
 app.use('/', router.todoRouter)
+app.use('/', router.todoListRouter)
 app.use('/', router.userRouter)
 
 
