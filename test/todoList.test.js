@@ -23,9 +23,6 @@ describe('todoList Unit Tests', () => {
         UserModel.clear()
 
         const user = await generateTestUser()
-        const token = await generateToken()
-
-        this.currentTest.token = token
         this.currentTest.user = user
     })
 
@@ -37,7 +34,7 @@ describe('todoList Unit Tests', () => {
     })
 
 
-    it('should get a todoList by id', async function() {
+    it('should get a todoList with associated todos by id', async function() {
         const newTodoList = await generateTodoList()
         const newTodos = await generateTodos(2, newTodoList._id, this.test.user._id)
 
@@ -67,15 +64,29 @@ describe('todoList Unit Tests', () => {
 
         const deletedTodoList = await TodoListModel.deleteTodoListById(newTodoList._id)
         const numRemovedTodos = await deletedTodoList.deleteTodos(newTodoList._id)
-        const todos = await tryFetchDeletedTodos(newTodoList._id)
+        const deletedTodos = await tryFetchDeletedTodos(newTodoList._id)
 
         deletedTodoList.numRemoved.should.equal(1)
         numRemovedTodos.should.equal(3)
-        todos.length.should.equal(0)
+        deletedTodos.length.should.equal(0)
     })
 })
 
+describe('todoList Integration Tests', () => {
+    this.currentTest = {}
 
+    beforeEach(async function() {
+        TodoListModel.clear()
+        TodoModel.clear()
+        UserModel.clear()
+
+        const user = await generateTestUser()
+        const token = await generateToken()
+
+        this.currentTest.token = token
+        this.currentTest.user = user
+    })
+})
 
 async function generateTestUser() {
     const username = process.env['USER_TEST']
