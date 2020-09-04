@@ -26,59 +26,28 @@ describe('todoList Unit Tests', () => {
     })
 
     it('should create a todoList', async () => {
-        const todoList = {
-            title: 'Todo List Title',
-            ownerId: this.currentTest.user._id
-        }
+        const newTodoList = await generateTodoList()
 
-        const createdTodoList = await TodoListModel.postTodoList(todoList)
+        const createdTodoList = await TodoListModel.postTodoList(newTodoList)
         createdTodoList.title.should.equal('Todo List Title')
     })
 
     it('should get a todoList by id', async () => {
-        const newTodoList = {
-            title: 'Todo List Title',
-            ownerId: this.currentTest.user._id,
-            id: '1'
-        }
-        await TodoListModel.postTodoList(newTodoList)
-        const newTodo = {
-            title: 'Todo Title',
-            done: false,
-            ownerId: this.currentTest.user._id,
-            listId: newTodoList.id
-        }
-        await TodoModel.postTodo(newTodo)
-        const newTodo2 = {
-            title: 'Todo Title 2',
-            done: false,
-            ownerId: this.currentTest.user._id,
-            listId: newTodoList.id
-        }
-        await TodoModel.postTodo(newTodo)
-        await TodoModel.postTodo(newTodo2)
+        const newTodoList = generateTodoList()
+        const newTodos = generateTodos(2, newTodoList._id)
 
-        const todoList = await TodoListModel.getTodoListById(newTodoList.id)
+        const todoList = await TodoListModel.getTodoListById(newTodoList._id)
+
         todoList.todoList.should.eql(newTodoList)
-        todoList.getTodos(newTodoList.id).should.eql(
-            [
-                newTodo,
-                newTodo2
-            ]
-        )
+        todoList.getTodos(newTodoList.id).should.eql(newTodos)
         todoList.isOwner(this.currentTest.user).should.equal(true)
     })
 
     it('should update todoList title by id', async () => {
-        const newTodoList = {
-            title: 'Todo List Title',
-            ownerId: this.currentTest.user._id,
-            id: '1'
-        }
-        await TodoListModel.postTodoList(newTodoList)
+        const newTodoList = await generateTodoList()
 
         const title = 'New Todo List Title'
-        const id = newTodoList.id
+        const id = newTodoList._id
 
         const updatedTodoList = await TodoListModel.updateTodoListTitleById(id, title)
         updatedTodoList.title.should.equal('New Todo List Title')
@@ -109,4 +78,28 @@ async function generateToken() {
     
     const token = req.body.token
     return token
+}
+
+async function generateTodoList() {
+    const newTodoList = {
+        title: 'Todo List Title',
+        ownerId: this.currentTest.user._id,
+        _id: '1'
+    }
+    const todoList = await TodoListModel.postTodoList(newTodoList)
+    return todoList
+}
+
+async function generateTodos(quantity, todoListId) {
+    let todos = []
+    for(i = 1; i <= quantity; i++) {
+        todos[i] = {
+            title: `Todo Title ${i}`,
+            done: false,
+            ownerId: this.currentTest.user._id,
+            listId: newTodoList.id
+        }
+        await TodoModel.postTodo(todos[i])
+    }
+    return todos
 }
