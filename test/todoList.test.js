@@ -105,6 +105,23 @@ describe('todoList Integration Tests', () => {
             expect(res.body).to.have.keys('title', 'ownerId', '_id')
         })
     })
+
+
+    it('should get a todoList with associated todos by Id', async function () {
+        const newTodoList = await generateTodoList(this.test.user._id)
+        const todos = await generateTodos(3, newTodoList._id, this.test.user._id)
+
+        request(app)
+        .get(`todoList/${newTodoList._id}`)
+        .set('Authorization', `Bearer ${this.test.token}`)
+        .set('Content-Type', `application/json`)
+        .end((err, res) => {
+            expect(res).to.have.status(200)
+            expect(res).to.be.json
+            expect(res.body.todoList).to.have.keys(Object.keys(newTodoList))
+            expect(res.body.todos).to.have.keys(Object.keys(todos[0]))
+        })
+    })
 })
 
 
@@ -134,7 +151,6 @@ async function generateToken() {
 }
 
 async function generateTodoList(userId) {
-    console.log(userId)
     const newTodoList = {
         title: 'Todo List Title',
         ownerId: userId,
@@ -163,4 +179,8 @@ async function tryFetchDeletedTodos(todoListId) {
     const todoList = await TodoListModel.getTodoListById(todoListId)
 
     return todoList.getTodos(todoListId)
+}
+
+async function generateKeysToArray() {
+
 }
