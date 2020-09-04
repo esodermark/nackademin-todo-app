@@ -72,6 +72,7 @@ describe('todoList Unit Tests', () => {
     })
 })
 
+
 describe('todoList Integration Tests', () => {
     this.currentTest = {}
 
@@ -86,7 +87,24 @@ describe('todoList Integration Tests', () => {
         this.currentTest.token = token
         this.currentTest.user = user
     })
+
+    it('should create a todoList', async function () {
+        const newTodoList = await generateTodoList()
+
+        request(app)
+        .post('/todoList')
+        .set('Authorization', `Bearer ${this.test.token}`)
+        .set('Content-Type', `application/json`)
+        .send(newTodoList)
+        .end((err, res) => {
+            expect(res).to.have.status(200)
+            expect(res).to.be.json
+            expect(res.body.todoList).to.have.keys(['_id','ownerId','title'])
+        })
+    })
 })
+
+
 
 async function generateTestUser() {
     const username = process.env['USER_TEST']
