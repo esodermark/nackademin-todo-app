@@ -49,15 +49,15 @@ describe('todoList Unit Tests', () => {
     })
 
 
-    // it('should update todoList title by id', async () => {
-    //     const newTodoList = await generateTodoList()
+    it('should update todoList title by id', async () => {
+        const newTodoList = await generateTodoList()
 
-    //     const title = 'New Todo List Title'
-    //     const id = newTodoList._id
+        const title = 'New Todo List Title'
+        const id = newTodoList._id
 
-    //     const updatedTodoList = await TodoListModel.updateTodoListTitleById(id, title)
-    //     updatedTodoList.title.should.equal('New Todo List Title')
-    // })
+        const numUpdated = await TodoListModel.updateTodoListTitleById(id, title)
+        numUpdated.should.equal(1)
+    })
 
 
     // it('should delete a todoList with associated todos by id', async() => {

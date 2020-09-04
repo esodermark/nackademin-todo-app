@@ -10,7 +10,6 @@ module.exports = {
             })
         })
     },
-
     getTodoListById(id) {
         return new Promise((resolve, reject) => {
             db.todoLists.find({ _id: id }, function (err, todoList) {
@@ -22,7 +21,7 @@ module.exports = {
                     },
                     getTodos(listId) {
                         return new Promise((resolve, reject) => {
-                            db.todos.find({listId: listId}, function(err, todos) {
+                            db.todos.find({ listId: listId }, function(err, todos) {
                                 if (err) reject(err)
                                 resolve(todos)
                             })
@@ -32,8 +31,16 @@ module.exports = {
             })
         });
     },
+    updateTodoListTitleById(id, title) {
+        return new Promise((resolve, reject) => {
+            db.todoLists.update({ _id: id }, { $set: { title: title } }, {}, function (err, numUpdated) {
+                if (err) reject(err)
+                resolve(numUpdated)
+            })
+        })
+    },
 
     clear() {
-        db.todoLists.remove({}, {multi: true})
+        db.todoLists.remove({}, { multi: true })
     }
 }
