@@ -33,8 +33,8 @@ describe('todoList Unit Tests', () => {
     })
 
     it('should get a todoList by id', async () => {
-        const newTodoList = generateTodoList()
-        const newTodos = generateTodos(2, newTodoList._id)
+        const newTodoList = await generateTodoList()
+        const newTodos = await generateTodos(2, newTodoList._id)
 
         const todoList = await TodoListModel.getTodoListById(newTodoList._id)
 
@@ -51,6 +51,17 @@ describe('todoList Unit Tests', () => {
 
         const updatedTodoList = await TodoListModel.updateTodoListTitleById(id, title)
         updatedTodoList.title.should.equal('New Todo List Title')
+    })
+
+    it('should delete a todoList with associated todos', async() => {
+        const newTodoList = await generateTodoList()
+        const newTodos = await generateTodoList(3, newTodoList._id)
+
+        const numDeleted = await TodoListModel.deleteTodoListById(newTodoList._id)
+        const todos = tryFetchDeletedTodos(newTodoList._id)
+
+        numDeleted.should.equal(1)
+        todos.should.equal({error: 'no todos with this TodoListId'})
     })
 })
 
@@ -102,4 +113,10 @@ async function generateTodos(quantity, todoListId) {
         await TodoModel.postTodo(todos[i])
     }
     return todos
+}
+
+async function tryFetchDeletedTodos(todoListId) {
+    const todoList = await TodoListModel.getTodoListById(todoListId)
+
+    return todoList.getTodos(todoListId)
 }
