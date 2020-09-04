@@ -11,6 +11,7 @@ chai.use(chaiHttp)
 const { expect, request } = chai
 
 const app = require('../app')
+const { use } = require('chai')
 require('dotenv').config()
 
 
@@ -35,7 +36,7 @@ describe('todoList Unit Tests', () => {
 
 
     it('should get a todoList with associated todos by id', async function() {
-        const newTodoList = await generateTodoList()
+        const newTodoList = await generateTodoList(this.test.user._id)
         const newTodos = await generateTodos(2, newTodoList._id, this.test.user._id)
 
         const todoList = await TodoListModel.getTodoListById(newTodoList._id)
@@ -47,8 +48,8 @@ describe('todoList Unit Tests', () => {
     })
 
 
-    it('should update todoList title by id', async () => {
-        const newTodoList = await generateTodoList()
+    it('should update todoList title by id', async function () {
+        const newTodoList = await generateTodoList(this.test.user._id)
 
         const title = 'New Todo List Title'
         const id = newTodoList._id
@@ -58,8 +59,8 @@ describe('todoList Unit Tests', () => {
     })
 
 
-    it('should delete a todoList with associated todos by id', async() => {
-        const newTodoList = await generateTodoList()
+    it('should delete a todoList with associated todos by id', async function () {
+        const newTodoList = await generateTodoList(this.test.user._id)
         await generateTodos(3, newTodoList._id)
 
         const deletedTodoList = await TodoListModel.deleteTodoListById(newTodoList._id)
@@ -89,7 +90,9 @@ describe('todoList Integration Tests', () => {
     })
 
     it('should create a todoList', async function () {
-        const newTodoList = await generateTodoList()
+        const newTodoList = {
+            title: 'Todo List Title'
+        }
 
         request(app)
         .post('/todoList')
@@ -99,7 +102,7 @@ describe('todoList Integration Tests', () => {
         .end((err, res) => {
             expect(res).to.have.status(200)
             expect(res).to.be.json
-            expect(res.body.todoList).to.have.keys(['_id','ownerId','title'])
+            expect(res.body).to.have.keys('title', 'ownerId', '_id')
         })
     })
 })
@@ -131,6 +134,7 @@ async function generateToken() {
 }
 
 async function generateTodoList(userId) {
+    console.log(userId)
     const newTodoList = {
         title: 'Todo List Title',
         ownerId: userId,
