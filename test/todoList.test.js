@@ -15,6 +15,7 @@ require('dotenv').config()
 
 describe('todoList Unit Tests', () => {
     this.currentTest = {}
+
     beforeEach(async () => {
         TodoListModel.clear()
 
@@ -25,12 +26,14 @@ describe('todoList Unit Tests', () => {
         this.currentTest.user = user
     })
 
+
     it('should create a todoList', async () => {
         const newTodoList = await generateTodoList()
 
         const createdTodoList = await TodoListModel.postTodoList(newTodoList)
         createdTodoList.title.should.equal('Todo List Title')
     })
+
 
     it('should get a todoList by id', async () => {
         const newTodoList = await generateTodoList()
@@ -43,6 +46,7 @@ describe('todoList Unit Tests', () => {
         todoList.isOwner(this.currentTest.user).should.equal(true)
     })
 
+
     it('should update todoList title by id', async () => {
         const newTodoList = await generateTodoList()
 
@@ -53,9 +57,10 @@ describe('todoList Unit Tests', () => {
         updatedTodoList.title.should.equal('New Todo List Title')
     })
 
-    it('should delete a todoList with associated todos', async() => {
+
+    it('should delete a todoList with associated todos by id', async() => {
         const newTodoList = await generateTodoList()
-        const newTodos = await generateTodoList(3, newTodoList._id)
+        await generateTodos(3, newTodoList._id)
 
         const numDeleted = await TodoListModel.deleteTodoListById(newTodoList._id)
         const todos = tryFetchDeletedTodos(newTodoList._id)
