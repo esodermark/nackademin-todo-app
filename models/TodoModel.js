@@ -1,5 +1,5 @@
 const db = require('../database/dbConnection')
-const permissions = require('../permissions/todoPermissions');
+const permissions = require('../permissions/todoPermissions')
 
 module.exports = {
     getAllTodos() {
