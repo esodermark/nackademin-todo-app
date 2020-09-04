@@ -13,11 +13,13 @@ switch (process.env.ENVIRONMENT) {
         db.todoLists.loadDatabase();
         break
     case 'test':
-        db.todoLists = new Datastore({ filename: __dirname + "/test_todoLists.db" });
+        db.todos = new Datastore({ filename: __dirname + "/test_todos.db" });
         db.users = new Datastore({ filename: __dirname + "/test_users.db" });
+        db.todoLists = new Datastore({ filename: __dirname + "/test_todoLists.db" });
 
-        db.todoLists.loadDatabase();
+        db.todos.loadDatabase();
         db.users.loadDatabase();
+        db.todoLists.loadDatabase();
         break
 }
 

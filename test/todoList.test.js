@@ -19,6 +19,7 @@ describe('todoList Unit Tests', () => {
 
     beforeEach(async function() {
         TodoListModel.clear()
+        TodoModel.clear()
 
         const user = await generateTestUser()
         const token = await generateToken()
@@ -30,21 +31,22 @@ describe('todoList Unit Tests', () => {
 
     it('should create a todoList', async function() {
         const newTodoList = await generateTodoList(this.test.user._id)
-        
+
         newTodoList.title.should.equal('Todo List Title')
     })
 
 
-    // it('should get a todoList by id', async () => {
-    //     const newTodoList = await generateTodoList()
-    //     const newTodos = await generateTodos(2, newTodoList._id)
+    it('should get a todoList by id', async function() {
+        const newTodoList = await generateTodoList()
+        const newTodos = await generateTodos(2, newTodoList._id, this.test.user._id)
 
-    //     const todoList = await TodoListModel.getTodoListById(newTodoList._id)
+        const todoList = await TodoListModel.getTodoListById(newTodoList._id)
+        const todos = await todoList.getTodos(newTodoList._id)
 
-    //     todoList.todoList.should.eql(newTodoList)
-    //     todoList.getTodos(newTodoList.id).should.eql(newTodos)
-    //     todoList.isOwner(this.test.user).should.equal(true)
-    // })
+        todoList.todoList.should.eql(newTodoList)
+        todos.should.eql(newTodos)
+        todoList.isOwner(this.test.user).should.equal(true)
+    })
 
 
     // it('should update todoList title by id', async () => {
@@ -106,14 +108,15 @@ async function generateTodoList(userId) {
     return todoList
 }
 
-async function generateTodos(quantity, todoListId) {
+async function generateTodos(quantity, todoListId, userId) {
     let todos = []
-    for(i = 1; i <= quantity; i++) {
+    for(i = 0; i < quantity; i++) {
         todos[i] = {
             title: `Todo Title ${i}`,
             done: false,
-            ownerId: this.test.user._id,
-            listId: newTodoList.id
+            ownerId: userId,
+            listId: todoListId,
+            _id: i
         }
         await TodoModel.postTodo(todos[i])
     }

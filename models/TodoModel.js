@@ -52,4 +52,7 @@ module.exports = {
             })
         })
     },
+    clear() {
+        db.todos.remove({}, {multi: true})
+    }
 }
