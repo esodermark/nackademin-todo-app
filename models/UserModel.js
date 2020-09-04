@@ -20,5 +20,9 @@ module.exports = {
                 resolve(user[0])
             })
         })
+    },
+
+    clear() {
+        db.users.remove({}, {multi: true})
     }
 }

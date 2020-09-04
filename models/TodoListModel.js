@@ -39,6 +39,24 @@ module.exports = {
             })
         })
     },
+    deleteTodoListById(id) {
+        return new Promise((resolve, reject)=>{
+            db.todoLists.remove({ _id: id }, (err, numRemoved) => {
+               if(err) reject (err)
+               resolve({
+                   numRemoved,
+                   deleteTodos(listId){
+                    return new Promise((resolve, reject)=>{
+                        db.todos.remove({ listId: listId }, { multi: true }, (err, numRemoved) => {
+                           if(err) reject (err)
+                           resolve(numRemoved)
+                        })
+                    })
+                   }
+               })
+            })
+        })
+    },
 
     clear() {
         db.todoLists.remove({}, { multi: true })

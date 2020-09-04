@@ -20,6 +20,7 @@ describe('todoList Unit Tests', () => {
     beforeEach(async function() {
         TodoListModel.clear()
         TodoModel.clear()
+        UserModel.clear()
 
         const user = await generateTestUser()
         const token = await generateToken()
@@ -60,16 +61,18 @@ describe('todoList Unit Tests', () => {
     })
 
 
-    // it('should delete a todoList with associated todos by id', async() => {
-    //     const newTodoList = await generateTodoList()
-    //     await generateTodos(3, newTodoList._id)
+    it('should delete a todoList with associated todos by id', async() => {
+        const newTodoList = await generateTodoList()
+        await generateTodos(3, newTodoList._id)
 
-    //     const numDeleted = await TodoListModel.deleteTodoListById(newTodoList._id)
-    //     const todos = tryFetchDeletedTodos(newTodoList._id)
+        const deletedTodoList = await TodoListModel.deleteTodoListById(newTodoList._id)
+        const numRemovedTodos = await deletedTodoList.deleteTodos(newTodoList._id)
+        const todos = await tryFetchDeletedTodos(newTodoList._id)
 
-    //     numDeleted.should.equal(1)
-    //     todos.should.equal({error: 'no todos with this TodoListId'})
-    // })
+        deletedTodoList.numRemoved.should.equal(1)
+        numRemovedTodos.should.equal(3)
+        todos.length.should.equal(0)
+    })
 })
 
 
