@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "set ENVIRONMENT=test&& mocha --exit"
+    "test": "set ENVIRONMENT=test&& mocha --recursive --exit"
   },
   "keywords": [],
   "author": "",
