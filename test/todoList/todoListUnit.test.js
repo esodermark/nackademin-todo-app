@@ -20,7 +20,7 @@ describe('todoList Unit Tests', () => {
         this.currentTest.user = user
     })
 
-    
+
     it('should create a todoList', async function() {
         const newTodoList = await helper.generateTodoList(this.test.user._id)
 
@@ -30,11 +30,10 @@ describe('todoList Unit Tests', () => {
 
     it('should get a todoList by id', async function() {
         const newTodoList = await helper.generateTodoList(this.test.user._id)
-        const newTodos = await helper.generateTodos(2, newTodoList._id, this.test.user._id)
 
         const todoList = await TodoListModel.getTodoListById(newTodoList._id)
 
-        todoList.should.eql(newTodoList)
+        todoList.todoList.should.eql(newTodoList)
         todoList.isOwner(this.test.user).should.equal(true)
     })
 

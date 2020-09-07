@@ -18,14 +18,6 @@ module.exports = {
                     todoList: todoList[0],
                     isOwner(user) {
                        return permissions.isOwner(user, todoList[0])
-                    },
-                    getTodos(listId) {
-                        return new Promise((resolve, reject) => {
-                            db.todos.find({ listId: listId }, function(err, todos) {
-                                if (err) reject(err)
-                                resolve(todos)
-                            })
-                        });
                     }
                 })
             })
@@ -43,17 +35,7 @@ module.exports = {
         return new Promise((resolve, reject)=>{
             db.todoLists.remove({ _id: id }, (err, numRemoved) => {
                if(err) reject (err)
-               resolve({
-                   numRemoved,
-                   deleteTodos(listId){
-                    return new Promise((resolve, reject)=>{
-                        db.todos.remove({ listId: listId }, { multi: true }, (err, numTodosRemoved) => {
-                           if(err) reject (err)
-                           resolve(numTodosRemoved)
-                        })
-                    })
-                   }
-               })
+               resolve(numRemoved)
             })
         })
     },
