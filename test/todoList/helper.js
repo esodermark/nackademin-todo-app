@@ -14,8 +14,7 @@ async function generateTestUser() {
 async function generateTodoList(userId) {
     const newTodoList = {
         title: 'Todo List Title',
-        ownerId: userId,
-        _id: '1'
+        ownerId: userId
     }
     const todoList = await TodoListModel.postTodoList(newTodoList)
     return todoList

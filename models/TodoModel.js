@@ -9,7 +9,7 @@ module.exports = {
                 resolve({
                     ...todos,
                     authTodos(user) {
-                        return permissions.readAuthorizedTodos(user, todos)
+                        return permissions.mapAuthorizedTodos(user, todos)
                     }
                 })
             })

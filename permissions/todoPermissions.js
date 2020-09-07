@@ -7,7 +7,7 @@ function isOwner(user, todo) {
     )
 }
 
-function readAuthorizedTodos(user, todos) {
+function mapAuthorizedTodos(user, todos) {
     if(user.role === ROLE.ADMIN) return todos
     return todos.filter(todo => todo.ownerId === user._id)
 }
@@ -18,6 +18,6 @@ function canCreateUser(user) {
 
 module.exports = {
     isOwner,
-    readAuthorizedTodos,
+    mapAuthorizedTodos,
     canCreateUser
 }
