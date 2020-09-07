@@ -88,14 +88,11 @@ describe('todoList Integration Tests', () => {
         .delete(`/todoList/${newTodoList._id}`)
         .set('Authorization', `Bearer ${this.test.token}`)
         .set('Content-Type', `application/json`)
-        .send()
-        .end(async (err, res) => {
+        .send((err, res) => {
             expect(res).to.have.status(200)
             expect(res).to.be.json
-            expect(res.body).to.equal(1)
-
-            const deletedTodos = await helper.tryFetchDeletedTodos(newTodoList._id)
-            expect(deletedTodos.length).to.equal(0)
+            expect(res.body.numTodoListsRemoved).to.equal(1)
+            expect(res.body.numTodosRemoved).to.equal(4)
         })
     })
 })

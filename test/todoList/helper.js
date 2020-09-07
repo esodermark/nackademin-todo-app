@@ -35,15 +35,8 @@ async function generateTodos(quantity, todoListId, userId) {
     return todos
 }
 
-async function tryFetchDeletedTodos(todoListId) {
-    const todoList = await TodoListModel.getTodoListById(todoListId)
-
-    return todoList.getTodos(todoListId)
-}
-
 module.exports = {
     generateTestUser,
     generateTodoList,
-    generateTodos,
-    tryFetchDeletedTodos
+    generateTodos
 }

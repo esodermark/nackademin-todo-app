@@ -28,6 +28,16 @@ module.exports = {
             })
         });
     },
+    getTodosByTodoListId(id) {
+        return new Promise((resolve, reject) => {
+            db.todos.find({ listId: id }, function(err, todos) {
+                console.log(id)
+                if (err) reject(err)
+                console.log(todos)
+                resolve(todos)
+            })
+        });
+    },
     postTodo(body) {
         return new Promise((resolve, reject) => {
             db.todos.insert(body, function(err, newDoc) {
@@ -48,6 +58,16 @@ module.exports = {
         return new Promise((resolve, reject)=>{
             db.todos.remove({ _id: id }, (err, numRemoved) => {
                if(err) reject (err)
+               resolve(numRemoved)
+            })
+        })
+    },
+    deleteTodosByTodoListId(id) {
+        return new Promise((resolve, reject)=>{
+            db.todos.remove({ listId: id }, { multi: true }, (err, numRemoved) => {
+               if(err) reject (err)
+               console.log(id)
+               console.log(numRemoved)
                resolve(numRemoved)
             })
         })
