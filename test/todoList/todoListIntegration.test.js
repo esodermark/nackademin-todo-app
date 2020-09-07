@@ -78,6 +78,25 @@ describe('todoList Integration Tests', () => {
             expect(res.body).to.equal(1)
         })
     })
+
+
+    it('should delete a todoList with associated todos by id', async function() {
+        const newTodoList = await helper.generateTodoList(this.test.user._id)
+        await helper.generateTodos(4, newTodoList._id, this.test.user._id)
+
+        request(app)
+        .delete(`/todoList/${newTodoList._id}`)
+        .set('Authorization', `Bearer ${this.test.token}`)
+        .set('Content-Type', `application/json`)
+        .send(newTodoList._id, (err, res) => {
+            expect(res).to.have.status(200)
+            expect(res).to.be.json
+            expect(res.body).to.equal(1)
+        })
+
+        const deletedTodos = await helper.tryFetchDeletedTodos(newTodoList._id)
+        expect(deletedTodos).length.to.equal(0)
+    })
 })
 
 
