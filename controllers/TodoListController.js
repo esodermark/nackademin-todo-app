@@ -1,5 +1,5 @@
 const TodoListModel = require('../models/TodoListModel')
-const { getTodoListById } = require('../models/TodoListModel')
+const TodoModel = require('../models/TodoListModel')
 
 module.exports = {
     postTodoListCallback: async (req, res) => {
@@ -33,7 +33,6 @@ module.exports = {
         }  
     },
     updateTodoListTitleByIdCallback: async (req, res) => {
-        console.log('update')
         try {
             const id = req.params.id
             const title = req.body.title ? req.body.title : ''
@@ -50,4 +49,22 @@ module.exports = {
             console.log(error)
         }
     },
+    deleteTodoListByIdCallback: async (req, res) => {
+        try {
+            const id = req.params.id
+
+            const todo = await TodoListModel.getTodoListById(id)
+            if(todo.isOwner(req.user)) {
+                const deletedTodoList = await TodoListModel.deleteTodoListById(id)
+                await deletedTodoList.deleteTodos(id)
+                
+                res.json(deletedTodoList.numRemoved).status(200)
+            } else {
+                res.sendStatus(401)
+            }   
+        } catch(error) { 
+            res.json('Todo could not be deleted')
+            console.log(error)
+        }
+    }
 }

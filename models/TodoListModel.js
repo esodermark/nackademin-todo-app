@@ -47,9 +47,9 @@ module.exports = {
                    numRemoved,
                    deleteTodos(listId){
                     return new Promise((resolve, reject)=>{
-                        db.todos.remove({ listId: listId }, { multi: true }, (err, numRemoved) => {
+                        db.todos.remove({ listId: listId }, { multi: true }, (err, numTodosRemoved) => {
                            if(err) reject (err)
-                           resolve(numRemoved)
+                           resolve(numTodosRemoved)
                         })
                     })
                    }

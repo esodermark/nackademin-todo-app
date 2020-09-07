@@ -10,7 +10,7 @@ router.post('/todoList', auth.user, TodoListController.postTodoListCallback)
 
 router.patch('/todoList/:id', auth.user, TodoListController.updateTodoListTitleByIdCallback)
 
-// router.delete('/todoList/:id', auth.user, TodoListController.deleteTodoListByIdCallback)
+router.delete('/todoList/:id', auth.user, TodoListController.deleteTodoListByIdCallback)
 
 
 
