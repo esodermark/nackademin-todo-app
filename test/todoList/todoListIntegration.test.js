@@ -52,9 +52,13 @@ describe('todoList Integration Tests', () => {
 
 
     it('should get all authorized to read todoLists', async function() {
-        await helper.generateTodoList(this.test.user._id)
-        await helper.generateTodoList(this.test.user._id)
-        await helper.generateTodoList('unauth userId')
+        this.test.user.role = 'basic'
+
+        const newTodoList = await helper.generateTodoList(this.test.user._id)
+        const newTodoList2 = await helper.generateTodoList('unauthorized userId')
+
+        await helper.generateTodos(3, newTodoList._id, this.test.user._id)
+        await helper.generateTodos(2, newTodoList2._id, this.test.user._id)
         
         chai.request(app)
         .get(`/todoLists`)
@@ -63,7 +67,8 @@ describe('todoList Integration Tests', () => {
         .then(function (res) {
             expect(res).to.have.status(200)
             expect(res).to.be.json
-            expect(res.body.length).to.equal(3)
+            expect(res.body.todoLists[0]).to.have.keys('todoList', 'todos')
+            expect(res.body.todoLists.length).to.equal(1)
 
             TodoListModel.clear()
         })
