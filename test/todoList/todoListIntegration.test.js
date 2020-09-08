@@ -34,7 +34,7 @@ describe('todoList Integration Tests', () => {
             title: 'Todo List Title'
         }
 
-        await chai.request(app)
+        await request(app)
         .post('/todoList')
         .set('Authorization', `Bearer ${this.test.token}`)
         .set('Content-Type', `application/json`)
@@ -58,7 +58,7 @@ describe('todoList Integration Tests', () => {
         await helper.generateTodos(3, newTodoList._id, this.test.user._id)
         await helper.generateTodos(2, newTodoList2._id, this.test.user._id)
         
-        await chai.request(app)
+        await request(app)
         .get(`/todoLists`)
         .set('Authorization', `Bearer ${this.test.token}`)
         .set('Content-Type', `application/json`)
@@ -78,7 +78,7 @@ describe('todoList Integration Tests', () => {
         const newTodoList = await helper.generateTodoList(this.test.user._id)
         const todos = await helper.generateTodos(3, newTodoList._id, this.test.user._id)
 
-        await chai.request(app)
+        await request(app)
         .get(`/todoList/${newTodoList._id}`)
         .set('Authorization', `Bearer ${this.test.token}`)
         .set('Content-Type', `application/json`)
@@ -97,7 +97,7 @@ describe('todoList Integration Tests', () => {
     it('should update a todoList title by id', async function () {
         const newTodoList = await helper.generateTodoList(this.test.user._id)
 
-        await chai.request(app)
+        await request(app)
         .patch(`/todoList/${newTodoList._id}`)
         .set('Authorization', `Bearer ${this.test.token}`)
         .set('Content-Type', `application/json`)
@@ -115,9 +115,9 @@ describe('todoList Integration Tests', () => {
 
     it('should delete a todoList with associated todos by id', async function() {
         const newTodoList = await helper.generateTodoList(this.test.user._id)
-        const todos = await helper.generateTodos(3, newTodoList._id, this.test.user._id)
+        await helper.generateTodos(3, newTodoList._id, this.test.user._id)
 
-        await chai.request(app)
+        await request(app)
         .delete(`/todoList/${newTodoList._id}`)
         .set('Authorization', `Bearer ${this.test.token}`)
         .set('Content-Type', `application/json`)
@@ -141,7 +141,7 @@ async function generateToken() {
     }
 
     const req = 
-        await chai.request(app)
+        await request(app)
         .post('/login')
         .send(loginAttempt)
     
