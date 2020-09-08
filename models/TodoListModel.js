@@ -10,6 +10,19 @@ module.exports = {
             })
         })
     },
+    getAllTodoLists() {
+        return new Promise((resolve, reject) => {
+            db.todoLists.find({}, function(err, todoLists) {
+                if (err) reject(err)
+                resolve({
+                    todoLists,
+                    authTodos(user) {
+                        return permissions.mapAuthorizedTodos(user, todoLists)
+                    }
+                })
+            })
+        });
+    },
     getTodoListById(id) {
         return new Promise((resolve, reject) => {
             db.todoLists.find({ _id: id }, function (err, todoList) {

@@ -28,7 +28,7 @@ describe('todoList Unit Tests', () => {
     })
 
 
-    it('should get all authorized to read todoLists', async function() {
+    it('should get all authorized to read todoLists, role == basic', async function() {
         this.test.user.role = 'basic'
         await helper.generateTodoList(this.test.user._id)
         await helper.generateTodoList(this.test.user._id)
@@ -37,8 +37,20 @@ describe('todoList Unit Tests', () => {
         const todoLists = await TodoListModel.getAllTodoLists()
         const authTodoLists = todoLists.authTodos(this.test.user, todoLists.todoLists)
 
-        todoLists.todoLists.length.should.equal(2)
+        todoLists.todoLists.length.should.equal(3)
         authTodoLists.length.should.equal(2)
+    })
+
+    it('should get all authorized to read todoLists, role == admin', async function() {
+        await helper.generateTodoList(this.test.user._id)
+        await helper.generateTodoList(this.test.user._id)
+        await helper.generateTodoList('unauthorized userId')
+
+        const todoLists = await TodoListModel.getAllTodoLists()
+        const authTodoLists = todoLists.authTodos(this.test.user, todoLists.todoLists)
+
+        todoLists.todoLists.length.should.equal(3)
+        authTodoLists.length.should.equal(3)
     })
     
 
