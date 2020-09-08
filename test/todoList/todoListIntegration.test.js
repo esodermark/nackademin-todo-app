@@ -52,8 +52,6 @@ describe('todoList Integration Tests', () => {
 
 
     it('should get all authorized to read todoLists', async function() {
-        this.test.user.role = 'basic'
-
         const newTodoList = await helper.generateTodoList(this.test.user._id)
         const newTodoList2 = await helper.generateTodoList('unauthorized userId')
 
@@ -67,8 +65,8 @@ describe('todoList Integration Tests', () => {
         .then(function (res) {
             expect(res).to.have.status(200)
             expect(res).to.be.json
-            expect(res.body.todoLists[0]).to.have.keys('todoList', 'todos')
-            expect(res.body.todoLists.length).to.equal(1)
+            expect(res.body[0]).to.have.keys('title', 'ownerId', '_id', 'todos')
+            expect(res.body.length).to.equal(2)
 
             TodoListModel.clear()
         })
