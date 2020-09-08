@@ -15,6 +15,22 @@ module.exports = {
             console.log(error)
         }
     },
+    getAllTodoListsCallback: async(req, res) => {
+        try {
+            const todoLists = await TodoListModel.getAllTodoLists()
+            const authTodoLists = await todoLists.authTodos(req.user)
+
+            for(let i = 0; i < authTodoLists.length; i++) {
+                const todos = await TodoModel.getTodosByTodoListId(authTodoLists[i]._id)
+                authTodoLists[i].todos = todos
+            }
+
+            res.json(authTodoLists)
+        } catch(error) {
+            res.json('Todos could not be generated')
+            console.log(error)
+        }
+    },
     getTodoListByIdCallback: async (req, res) => {
         try {
             const id = req.params.id

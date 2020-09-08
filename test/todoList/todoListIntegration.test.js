@@ -3,7 +3,6 @@ const UserModel = require('../../models/UserModel')
 const TodoModel = require('../../models/TodoModel')
 
 const chai = require('chai')
-require('chai').should();
 const chaiHttp = require('chai-http')
 chai.use(chaiHttp)
 const { expect, request } = chai
@@ -14,13 +13,13 @@ require('dotenv').config()
 const helper = require('./helper')
 
 
-describe('todoList Integration Tests', () => {
+describe('todoList Integration Tests', (done) => {
     this.currentTest = {}
 
     beforeEach(async function() {
-        TodoListModel.clear()
-        TodoModel.clear()
-        UserModel.clear()
+        await TodoListModel.clear()
+        await TodoModel.clear()
+        await UserModel.clear()
 
         const user = await helper.generateTestUser()
         const token = await generateToken()
@@ -35,15 +34,20 @@ describe('todoList Integration Tests', () => {
             title: 'Todo List Title'
         }
 
-        request(app)
+        chai.request(app)
         .post('/todoList')
         .set('Authorization', `Bearer ${this.test.token}`)
         .set('Content-Type', `application/json`)
-        .send(newTodoList, (err, res) => {
+        .send(newTodoList)
+        .then(function (res) {
+            expect(res).to.have.status(200);
             expect(res).to.have.status(200)
             expect(res).to.be.json
             expect(res.body).to.have.keys('title', 'ownerId', '_id')
-        })
+         })
+         .catch(function (err) {
+            throw err;
+         });
 
     })
 
@@ -51,52 +55,63 @@ describe('todoList Integration Tests', () => {
     it('should get all authorized to read todoLists with associated todos', async function() {
         this.test.user.role = 'basic'
         const newTodoList = await helper.generateTodoList(this.test.user._id)
-        const newTodoList2 = await helper.generateTodoList('unauthorized userId')
+        const newTodoList2 = await helper.generateTodoList('unauth userId')
 
         await helper.generateTodos(3, newTodoList._id, this.test.user._id)
         await helper.generateTodos(2, newTodoList2._id, this.test.user._id)
-
-        request(app)
+        
+        chai.request(app)
         .get(`/todoLists`)
         .set('Authorization', `Bearer ${this.test.token}`)
         .set('Content-Type', `application/json`)
-        .send((err, res) => {
+        .then(function (res) {
             expect(res).to.have.status(200)
             expect(res).to.be.json
-            expect(res.body.todoLists[0]).to.have.keys('todoList', 'todos')
+            expect(res.body.todoLists[0]).to.have.keys(Object.keys(newTodoList), 'todos')
             expect(res.body.todoLists.length).to.equal(1)
         })
+        .catch(function (err) {
+            throw err;
+         });
     })
+
 
     it('should get a todoList with associated todos by id', async function () {
         const newTodoList = await helper.generateTodoList(this.test.user._id)
         const todos = await helper.generateTodos(3, newTodoList._id, this.test.user._id)
 
-        request(app)
+        chai.request(app)
         .get(`/todoList/${newTodoList._id}`)
         .set('Authorization', `Bearer ${this.test.token}`)
         .set('Content-Type', `application/json`)
-        .send((err, res) => {
+        .then(function (res) {
             expect(res).to.have.status(200)
             expect(res).to.be.json
             expect(res.body.todoList).to.have.keys(Object.keys(newTodoList))
             expect(res.body.todos[0]).to.have.keys(Object.keys(todos[0]))
         })
+        .catch(function (err) {
+            throw err;
+         });
     })
 
 
     it('should update a todoList title by id', async function () {
         const newTodoList = await helper.generateTodoList(this.test.user._id)
 
-        request(app)
+        chai.request(app)
         .patch(`/todoList/${newTodoList._id}`)
         .set('Authorization', `Bearer ${this.test.token}`)
         .set('Content-Type', `application/json`)
-        .send(newTodoList, (err, res) => {
+        .send(newTodoList)
+        .then(function (res) {
             expect(res).to.have.status(200)
             expect(res).to.be.json
             expect(res.body).to.equal(1)
         })
+        .catch(function (err) {
+            throw err;
+         });
     })
 
 
@@ -104,16 +119,19 @@ describe('todoList Integration Tests', () => {
         const newTodoList = await helper.generateTodoList(this.test.user._id)
         await helper.generateTodos(4, newTodoList._id, this.test.user._id)
 
-        request(app)
+        chai.request(app)
         .delete(`/todoList/${newTodoList._id}`)
         .set('Authorization', `Bearer ${this.test.token}`)
         .set('Content-Type', `application/json`)
-        .send((err, res) => {
+        .then(function (res) {
             expect(res).to.have.status(200)
             expect(res).to.be.json
             expect(res.body.numTodoListsRemoved).to.equal(1)
             expect(res.body.numTodosRemoved).to.equal(4)
         })
+        .catch(function (err) {
+            throw err;
+         });
     })
 })
 
@@ -125,10 +143,11 @@ async function generateToken() {
     }
 
     const req = 
-        await request(app)
+        await chai.request(app)
         .post('/login')
         .send(loginAttempt)
     
     const token = req.body.token
+
     return token
 }

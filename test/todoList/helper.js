@@ -28,7 +28,7 @@ async function generateTodos(quantity, todoListId, userId) {
             done: false,
             ownerId: userId,
             listId: todoListId,
-            _id: i
+            _id: Math.random().toString(36).substring(7)
         }
         await TodoModel.postTodo(todos[i])
     }

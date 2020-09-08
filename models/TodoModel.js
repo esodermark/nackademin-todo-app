@@ -31,9 +31,7 @@ module.exports = {
     getTodosByTodoListId(id) {
         return new Promise((resolve, reject) => {
             db.todos.find({ listId: id }, function(err, todos) {
-                console.log(id)
                 if (err) reject(err)
-                console.log(todos)
                 resolve(todos)
             })
         });
@@ -66,8 +64,6 @@ module.exports = {
         return new Promise((resolve, reject)=>{
             db.todos.remove({ listId: id }, { multi: true }, (err, numRemoved) => {
                if(err) reject (err)
-               console.log(id)
-               console.log(numRemoved)
                resolve(numRemoved)
             })
         })
