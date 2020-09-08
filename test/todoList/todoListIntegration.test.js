@@ -17,7 +17,9 @@ describe('todoList Integration Tests', () => {
     this.currentTest = {}
 
     beforeEach(async function() {
-        await UserModel.clear()
+        UserModel.clear()
+        TodoListModel.clear()
+        TodoModel.clear()
 
         const user = await helper.generateTestUser()
         const token = await generateToken()
@@ -27,12 +29,12 @@ describe('todoList Integration Tests', () => {
     })
 
 
-    it('should create a todoList', function () {
+    it('should create a todoList', async function () {
         const newTodoList = {
             title: 'Todo List Title'
         }
 
-        chai.request(app)
+        await chai.request(app)
         .post('/todoList')
         .set('Authorization', `Bearer ${this.test.token}`)
         .set('Content-Type', `application/json`)
@@ -42,8 +44,6 @@ describe('todoList Integration Tests', () => {
             expect(res).to.have.status(200)
             expect(res).to.be.json
             expect(res.body).to.have.keys('title', 'ownerId', '_id')
-
-            TodoListModel.clear()
          })
          .catch(function (err) {
             throw err;
@@ -58,18 +58,15 @@ describe('todoList Integration Tests', () => {
         await helper.generateTodos(3, newTodoList._id, this.test.user._id)
         await helper.generateTodos(2, newTodoList2._id, this.test.user._id)
         
-        chai.request(app)
+        await chai.request(app)
         .get(`/todoLists`)
         .set('Authorization', `Bearer ${this.test.token}`)
         .set('Content-Type', `application/json`)
         .then(function (res) {
-            console.log(res.body[0].todos)
             expect(res).to.have.status(200)
             expect(res).to.be.json
             expect(res.body[0]).to.have.keys('title', 'ownerId', '_id', 'todos')
             expect(res.body.length).to.equal(2)
-
-            TodoListModel.clear()
         })
         .catch(function (err) {
             throw err;
@@ -81,20 +78,15 @@ describe('todoList Integration Tests', () => {
         const newTodoList = await helper.generateTodoList(this.test.user._id)
         const todos = await helper.generateTodos(3, newTodoList._id, this.test.user._id)
 
-        chai.request(app)
+        await chai.request(app)
         .get(`/todoList/${newTodoList._id}`)
         .set('Authorization', `Bearer ${this.test.token}`)
         .set('Content-Type', `application/json`)
         .then(function (res) {
-
-            console.log(res.body)
-
             expect(res).to.have.status(200)
             expect(res).to.be.json
             expect(res.body.todoList).to.have.keys(Object.keys(newTodoList))
             expect(res.body.todos[0]).to.have.keys(Object.keys(todos[0]))
-
-            TodoListModel.clear()
         })
         .catch(function (err) {
             throw err;
@@ -105,7 +97,7 @@ describe('todoList Integration Tests', () => {
     it('should update a todoList title by id', async function () {
         const newTodoList = await helper.generateTodoList(this.test.user._id)
 
-        chai.request(app)
+        await chai.request(app)
         .patch(`/todoList/${newTodoList._id}`)
         .set('Authorization', `Bearer ${this.test.token}`)
         .set('Content-Type', `application/json`)
@@ -114,8 +106,6 @@ describe('todoList Integration Tests', () => {
             expect(res).to.have.status(200)
             expect(res).to.be.json
             expect(res.body).to.equal(1)
-
-            TodoListModel.clear()
         })
         .catch(function (err) {
             throw err;
@@ -125,9 +115,9 @@ describe('todoList Integration Tests', () => {
 
     it('should delete a todoList with associated todos by id', async function() {
         const newTodoList = await helper.generateTodoList(this.test.user._id)
-        await helper.generateTodos(3, newTodoList._id, this.test.user._id)
+        const todos = await helper.generateTodos(3, newTodoList._id, this.test.user._id)
 
-        chai.request(app)
+        await chai.request(app)
         .delete(`/todoList/${newTodoList._id}`)
         .set('Authorization', `Bearer ${this.test.token}`)
         .set('Content-Type', `application/json`)
@@ -136,8 +126,6 @@ describe('todoList Integration Tests', () => {
             expect(res).to.be.json
             expect(res.body.numTodoListsRemoved).to.equal(1)
             expect(res.body.numTodosRemoved).to.equal(3)
-
-            TodoListModel.clear()
         })
         .catch(function (err) {
             throw err;

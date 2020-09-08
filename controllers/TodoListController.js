@@ -73,9 +73,13 @@ module.exports = {
 
             const todo = await TodoListModel.getTodoListById(id)
             if(todo.isOwner(req.user)) {
-                const numRemoved = await TodoListModel.deleteTodoListById(id)
+                const numTodoListsRemoved = await TodoListModel.deleteTodoListById(id)
+                const numTodosRemoved = await TodoModel.deleteTodosByTodoListId(id)
                 
-                res.json(numRemoved).status(200)
+                res.json({
+                    numTodoListsRemoved,
+                    numTodosRemoved
+                }).status(200)
             } else {
                 res.sendStatus(401)
             }   
