@@ -36,8 +36,12 @@ module.exports = {
             const id = req.params.id
            
             const todoList = await TodoListModel.getTodoListById(id)
+            const todos = await TodoModel.getTodosByTodoListId(id)
             todoList.isOwner(req.user) 
-            ? res.json(todoList.todoList).status(200) 
+            ? res.json({
+                ...todoList,
+                todos
+            }).status(200) 
             : res.sendStatus(401)
         } catch(error) {
             res.json('Something went wrong')

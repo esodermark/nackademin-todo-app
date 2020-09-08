@@ -55,7 +55,7 @@ describe('todoList Integration Tests', () => {
         const newTodoList = await helper.generateTodoList(this.test.user._id)
         const newTodoList2 = await helper.generateTodoList('unauthorized userId')
 
-        const todos = await helper.generateTodos(3, newTodoList._id, this.test.user._id)
+        await helper.generateTodos(3, newTodoList._id, this.test.user._id)
         await helper.generateTodos(2, newTodoList2._id, this.test.user._id)
         
         chai.request(app)
@@ -79,17 +79,20 @@ describe('todoList Integration Tests', () => {
 
     it('should get a todoList with associated todos by id', async function () {
         const newTodoList = await helper.generateTodoList(this.test.user._id)
-        const todos = await generateTodos(3, newTodoList._id, this.test.user._id)
+        const todos = await helper.generateTodos(3, newTodoList._id, this.test.user._id)
 
         chai.request(app)
         .get(`/todoList/${newTodoList._id}`)
         .set('Authorization', `Bearer ${this.test.token}`)
         .set('Content-Type', `application/json`)
         .then(function (res) {
+
+            console.log(res.body)
+
             expect(res).to.have.status(200)
             expect(res).to.be.json
-            expect(res.body).to.have.keys(Object.keys(newTodoList))
-            expect(res.body.todos).to.have.keys(Object.keys(todos[0]))
+            expect(res.body.todoList).to.have.keys(Object.keys(newTodoList))
+            expect(res.body.todos[0]).to.have.keys(Object.keys(todos[0]))
 
             TodoListModel.clear()
         })
