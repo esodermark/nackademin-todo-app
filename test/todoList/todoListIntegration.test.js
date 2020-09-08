@@ -48,6 +48,26 @@ describe('todoList Integration Tests', () => {
     })
 
 
+    it('should get all authorized to read todoLists with associated todos', async function() {
+        this.test.user.role = 'basic'
+        const newTodoList = await helper.generateTodoList(this.test.user._id)
+        const newTodoList2 = await helper.generateTodoList('unauthorized userId')
+
+        await helper.generateTodos(3, newTodoList._id, this.test.user._id)
+        await helper.generateTodos(2, newTodoList2._id, this.test.user._id)
+
+        request(app)
+        .get(`/todoLists`)
+        .set('Authorization', `Bearer ${this.test.token}`)
+        .set('Content-Type', `application/json`)
+        .send((err, res) => {
+            expect(res).to.have.status(200)
+            expect(res).to.be.json
+            expect(res.body.todoLists[0]).to.have.keys('todoList', 'todos')
+            expect(res.body.todoLists.length).to.equal(1)
+        })
+    })
+
     it('should get a todoList with associated todos by id', async function () {
         const newTodoList = await helper.generateTodoList(this.test.user._id)
         const todos = await helper.generateTodos(3, newTodoList._id, this.test.user._id)

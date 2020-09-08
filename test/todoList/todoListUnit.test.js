@@ -41,6 +41,7 @@ describe('todoList Unit Tests', () => {
         authTodoLists.length.should.equal(2)
     })
 
+    
     it('should get all authorized to read todoLists, role == admin', async function() {
         await helper.generateTodoList(this.test.user._id)
         await helper.generateTodoList(this.test.user._id)
