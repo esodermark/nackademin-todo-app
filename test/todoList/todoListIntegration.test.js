@@ -13,12 +13,10 @@ require('dotenv').config()
 const helper = require('./helper')
 
 
-describe('todoList Integration Tests', (done) => {
+describe('todoList Integration Tests', () => {
     this.currentTest = {}
 
     beforeEach(async function() {
-        await TodoListModel.clear()
-        await TodoModel.clear()
         await UserModel.clear()
 
         const user = await helper.generateTestUser()
@@ -29,7 +27,7 @@ describe('todoList Integration Tests', (done) => {
     })
 
 
-    it('should create a todoList', async function () {
+    it('should create a todoList', function () {
         const newTodoList = {
             title: 'Todo List Title'
         }
@@ -44,21 +42,19 @@ describe('todoList Integration Tests', (done) => {
             expect(res).to.have.status(200)
             expect(res).to.be.json
             expect(res.body).to.have.keys('title', 'ownerId', '_id')
+
+            TodoListModel.clear()
          })
          .catch(function (err) {
             throw err;
          });
-
     })
 
 
-    it('should get all authorized to read todoLists with associated todos', async function() {
-        this.test.user.role = 'basic'
-        const newTodoList = await helper.generateTodoList(this.test.user._id)
-        const newTodoList2 = await helper.generateTodoList('unauth userId')
-
-        await helper.generateTodos(3, newTodoList._id, this.test.user._id)
-        await helper.generateTodos(2, newTodoList2._id, this.test.user._id)
+    it('should get all authorized to read todoLists', async function() {
+        await helper.generateTodoList(this.test.user._id)
+        await helper.generateTodoList(this.test.user._id)
+        await helper.generateTodoList('unauth userId')
         
         chai.request(app)
         .get(`/todoLists`)
@@ -67,18 +63,18 @@ describe('todoList Integration Tests', (done) => {
         .then(function (res) {
             expect(res).to.have.status(200)
             expect(res).to.be.json
-            expect(res.body.todoLists[0]).to.have.keys(Object.keys(newTodoList), 'todos')
-            expect(res.body.todoLists.length).to.equal(1)
+            expect(res.body.length).to.equal(3)
+
+            TodoListModel.clear()
         })
         .catch(function (err) {
             throw err;
-         });
+         });     
     })
 
 
-    it('should get a todoList with associated todos by id', async function () {
+    it('should get a todoList by id', async function () {
         const newTodoList = await helper.generateTodoList(this.test.user._id)
-        const todos = await helper.generateTodos(3, newTodoList._id, this.test.user._id)
 
         chai.request(app)
         .get(`/todoList/${newTodoList._id}`)
@@ -87,8 +83,9 @@ describe('todoList Integration Tests', (done) => {
         .then(function (res) {
             expect(res).to.have.status(200)
             expect(res).to.be.json
-            expect(res.body.todoList).to.have.keys(Object.keys(newTodoList))
-            expect(res.body.todos[0]).to.have.keys(Object.keys(todos[0]))
+            expect(res.body).to.have.keys(Object.keys(newTodoList))
+
+            TodoListModel.clear()
         })
         .catch(function (err) {
             throw err;
@@ -108,6 +105,8 @@ describe('todoList Integration Tests', (done) => {
             expect(res).to.have.status(200)
             expect(res).to.be.json
             expect(res.body).to.equal(1)
+
+            TodoListModel.clear()
         })
         .catch(function (err) {
             throw err;
@@ -117,7 +116,6 @@ describe('todoList Integration Tests', (done) => {
 
     it('should delete a todoList with associated todos by id', async function() {
         const newTodoList = await helper.generateTodoList(this.test.user._id)
-        await helper.generateTodos(4, newTodoList._id, this.test.user._id)
 
         chai.request(app)
         .delete(`/todoList/${newTodoList._id}`)
@@ -126,8 +124,9 @@ describe('todoList Integration Tests', (done) => {
         .then(function (res) {
             expect(res).to.have.status(200)
             expect(res).to.be.json
-            expect(res.body.numTodoListsRemoved).to.equal(1)
-            expect(res.body.numTodosRemoved).to.equal(4)
+            expect(res.body).to.equal(1)
+
+            TodoListModel.clear()
         })
         .catch(function (err) {
             throw err;

@@ -20,11 +20,6 @@ module.exports = {
             const todoLists = await TodoListModel.getAllTodoLists()
             const authTodoLists = await todoLists.authTodos(req.user)
 
-            for(let i = 0; i < authTodoLists.length; i++) {
-                const todos = await TodoModel.getTodosByTodoListId(authTodoLists[i]._id)
-                authTodoLists[i].todos = todos
-            }
-
             res.json(authTodoLists)
         } catch(error) {
             res.json('Todos could not be generated')
@@ -36,12 +31,8 @@ module.exports = {
             const id = req.params.id
            
             const todoList = await TodoListModel.getTodoListById(id)
-            const todos = await TodoModel.getTodosByTodoListId(id)
             todoList.isOwner(req.user) 
-            ? res.json({
-                ...todoList,
-                todos
-            }).status(200) 
+            ? res.json(todoList.todoList).status(200) 
             : res.sendStatus(401)
         } catch(error) {
             res.json('Something went wrong')
@@ -54,12 +45,14 @@ module.exports = {
             const title = req.body.title ? req.body.title : ''
 
             const todoList = await TodoListModel.getTodoListById(id)
+
             if(todoList.isOwner(req.user)) {
                 const numUpdated = await TodoListModel.updateTodoListTitleById(id, title)
                 res.json(numUpdated).status(200)
             } else {
                 res.sendStatus(401)
             }
+          
         } catch(error) { 
             res.json('Todo could not be updated')
             console.log(error)
@@ -71,10 +64,9 @@ module.exports = {
 
             const todo = await TodoListModel.getTodoListById(id)
             if(todo.isOwner(req.user)) {
-                const numTodoListsRemoved = await TodoListModel.deleteTodoListById(id)
-                const numTodosRemoved = await TodoModel.deleteTodosByTodoListId(id)
+                const numRemoved = await TodoListModel.deleteTodoListById(id)
                 
-                res.json({numTodoListsRemoved, numTodosRemoved}).status(200)
+                res.json(numRemoved).status(200)
             } else {
                 res.sendStatus(401)
             }   
