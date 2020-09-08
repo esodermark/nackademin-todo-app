@@ -28,6 +28,20 @@ describe('todoList Unit Tests', () => {
     })
 
 
+    it('should get all authorized to read todoLists', async function() {
+        this.test.user.role = 'basic'
+        await helper.generateTodoList(this.test.user._id)
+        await helper.generateTodoList(this.test.user._id)
+        await helper.generateTodoList('unauthorized userId')
+
+        const todoLists = await TodoListModel.getAllTodoLists()
+        const authTodoLists = todoLists.authTodos(this.test.user, todoLists.todoLists)
+
+        todoLists.todoLists.length.should.equal(2)
+        authTodoLists.length.should.equal(2)
+    })
+    
+
     it('should get a todoList by id', async function() {
         const newTodoList = await helper.generateTodoList(this.test.user._id)
 
