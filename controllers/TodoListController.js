@@ -51,7 +51,6 @@ module.exports = {
             const title = req.body.title ? req.body.title : ''
 
             const todoList = await TodoListModel.getTodoListById(id)
-
             if(todoList.isOwner(req.user)) {
                 const numUpdated = await TodoListModel.updateTodoListTitleById(id, title)
                 res.json(numUpdated).status(200)

@@ -102,23 +102,26 @@ describe('todoList Integration Tests', () => {
     })
 
 
-    // it('should update a todoList title by id', async function () {
-    //     const newTodoList = await helper.generateTodoList(this.test.user._id)
+    it('should update a todoList title by id', async function () {
+        const newTodoList = await helper.generateTodoList(this.test.user._id)
+        const body = {
+            title: 'New Title'
+        }
 
-    //     await request(app)
-    //     .patch(`/todoList/${newTodoList._id}`)
-    //     .set('Authorization', `Bearer ${this.test.token}`)
-    //     .set('Content-Type', `application/json`)
-    //     .send(newTodoList)
-    //     .then(function (res) {
-    //         expect(res).to.have.status(200)
-    //         expect(res).to.be.json
-    //         expect(res.body).to.equal(1)
-    //     })
-    //     .catch(function (err) {
-    //         throw err;
-    //      });
-    // })
+        await request(app)
+        .patch(`/todoList/${newTodoList._id}`)
+        .set('Authorization', `Bearer ${this.test.token}`)
+        .set('Content-Type', `application/json`)
+        .send(body)
+        .then(function (res) {
+            expect(res).to.have.status(200)
+            expect(res).to.be.json
+            expect(res.body).to.equal(1)
+        })
+        .catch(function (err) {
+            throw err;
+         });
+    })
 
 
     // it('should delete a todoList with associated todos by id', async function() {
