@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "set ENVIRONMENT=test&& mocha --recursive --exit",
+    "test": "cross-env ENVIRONMENT=test mocha --recursive --exit",
     "start": "node start.js"
   },
   "keywords": [],
@@ -16,6 +16,7 @@
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
     "jsonwebtoken": "^8.5.1",
     "mocha": "^8.1.3",
