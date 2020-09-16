@@ -73,7 +73,7 @@ describe('todoList Integration Tests', () => {
         .then(function (res) {
             expect(res).to.have.status(200)
             expect(res).to.be.json
-            expect(res.body[0]).to.have.keys('__v',  '_id', 'title', 'ownerId', 'todos', )
+            expect(res.body[0]).to.have.keys('__v',  '_id', 'title', 'ownerId', 'todos')
             expect(res.body.length).to.equal(2)
         })
         .catch(function (err) {
@@ -82,24 +82,24 @@ describe('todoList Integration Tests', () => {
     })
 
 
-    // it('should get a todoList with associated todos by id', async function () {
-    //     const newTodoList = await helper.generateTodoList(this.test.user._id)
-    //     const todos = await helper.generateTodos(3, newTodoList._id, this.test.user._id)
+    it('should get a todoList with associated todos by id', async function () {
+        const newTodoList = await helper.generateTodoList(this.test.user._id)
+        const todos = await helper.generateTodos(3, newTodoList._id, this.test.user._id)
 
-    //     await request(app)
-    //     .get(`/todoList/${newTodoList._id}`)
-    //     .set('Authorization', `Bearer ${this.test.token}`)
-    //     .set('Content-Type', `application/json`)
-    //     .then(function (res) {
-    //         expect(res).to.have.status(200)
-    //         expect(res).to.be.json
-    //         expect(res.body.todoList).to.have.keys(Object.keys(newTodoList))
-    //         expect(res.body.todos[0]).to.have.keys(Object.keys(todos[0]))
-    //     })
-    //     .catch(function (err) {
-    //         throw err;
-    //      });
-    // })
+        await request(app)
+        .get(`/todoList/${newTodoList._id}`)
+        .set('Authorization', `Bearer ${this.test.token}`)
+        .set('Content-Type', `application/json`)
+        .then(function (res) {
+            expect(res).to.have.status(200)
+            expect(res).to.be.json
+            expect(res.body.todoList).to.have.keys('title', 'ownerId', '_id', '__v')
+            expect(res.body.todos[0]).to.have.keys('__v',  '_id', 'title', 'done', 'ownerId', 'listId')
+        })
+        .catch(function (err) {
+            throw err;
+         });
+    })
 
 
     // it('should update a todoList title by id', async function () {
