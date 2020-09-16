@@ -28,7 +28,7 @@ describe('todoList Unit Tests', () => {
     })
 
     it('should pass', function() {
-        (true).should.equal(true)
+        (true).should.equal(false)
     })
 
 
