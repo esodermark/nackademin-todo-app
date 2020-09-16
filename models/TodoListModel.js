@@ -18,7 +18,7 @@ module.exports = {
         return todoList._doc
     },
     async getAllTodoLists() {
-        const todoLists = await TodoList.find()
+        const todoLists = await TodoList.find().lean()
         return {
             todoLists: todoLists,
             authTodos(user) {
@@ -34,31 +34,17 @@ module.exports = {
                 return permissions.isOwner(user, todoList)
             }
         }
-        return new Promise((resolve, reject) => {
-            db.todoLists.find({ _id: id }, function (err, todoList) {
-                if (err) reject(err)
-                resolve({
-                    todoList: todoList[0],
-                    isOwner(user) {
-                       return permissions.isOwner(user, todoList[0])
-                    }
-                })
-            })
-        });
     },
     async updateTodoListTitleById(id, title) {
-       const updatedTodoList = await TodoList.updateOne({_id: id}, {title: title} )
-       
+       const updatedTodoList = await TodoList.updateOne( {_id: id}, {title: title} )
+
        return updatedTodoList.nModified
     },
-    // deleteTodoListById(id) {
-    //     return new Promise((resolve, reject)=>{
-    //         db.todoLists.remove({ _id: id }, (err, numRemoved) => {
-    //            if(err) reject (err)
-    //            resolve(numRemoved)
-    //         })
-    //     })
-    // },
+    async deleteTodoListById(id) {
+        const deletedTodoList = await TodoList.deleteOne( {_id: id} )
+
+        return deletedTodoList.deletedCount
+    },
 
     async clear() {
         return await TodoList.deleteMany({})

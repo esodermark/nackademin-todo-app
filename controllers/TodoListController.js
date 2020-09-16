@@ -1,3 +1,4 @@
+const auth = require('../middleware/auth')
 const TodoListModel = require('../models/TodoListModel')
 const TodoModel = require('../models/TodoModel')
 
@@ -21,7 +22,6 @@ module.exports = {
             const authTodoLists = await todoLists.authTodos(req.user)
 
             authTodoListsWithTodos = await mapTodosOntoTodoLists(authTodoLists)
-
             res.json(authTodoListsWithTodos)
         } catch(error) {
             res.json('Todos could not be generated')

@@ -85,13 +85,13 @@ describe('todoList Unit Tests', () => {
     })
 
 
-    // it('should delete a todoList by id', async function () {
-    //     const newTodoList = await helper.generateTodoList(this.test.user._id)
+    it('should delete a todoList by id', async function () {
+        const newTodoList = await helper.generateTodoList(this.test.user._id)
 
-    //     const numRemoved = await TodoListModel.deleteTodoListById(newTodoList._id)
+        const numRemoved = await TodoListModel.deleteTodoListById(newTodoList._id)
 
-    //     numRemoved.should.equal(1)
-    // })
+        numRemoved.should.equal(1)
+    })
 })
 
 

@@ -16,22 +16,25 @@ module.exports = {
     async getAllTodos() {
         const todos = await Todo.find()
         return {
-            ...todos._doc,
+            ...todos,
             authTodos(user) {
                 return permissions.mapAuthorizedTodos(user, todos)
             }
         }
     },
     async getTodoById(id) {
-        const todo = await Todo.findById(id)
+        const todo = await Todo.findById(id).lean()
         return {
-            ...todo._doc,
+            ...todo,
             isOwner(user) {
-                return permissions.isOwner(user, todo[0])
+                return permissions.isOwner(user, todo)
             }
         }
     },
-    getTodosByTodoListId(id) {
+    async getTodosByTodoListId(id) {
+        const todos = await Todo.find({ listId: id }).lean()
+        return todos
+       
         return new Promise((resolve, reject) => {
             db.todos.find({ listId: id }, function(err, todos) {
                 if (err) reject(err)
@@ -39,7 +42,11 @@ module.exports = {
             })
         });
     },
-    postTodo(body) {
+    async postTodo(body) {
+        const {title, done, ownerId, listId} = body
+        const _id = mongoose.Types.ObjectId();
+        const todo = await Todo.create({_id, title, done, ownerId, listId})
+        return todo._doc
         return new Promise((resolve, reject) => {
             db.todos.insert(body, function(err, newDoc) {
                 if (err) reject(err)
@@ -71,7 +78,7 @@ module.exports = {
             })
         })
     },
-    clear() {
-        db.todos.remove({}, {multi: true})
+    async clear() {
+        return await Todo.deleteMany({})
     }
 }
