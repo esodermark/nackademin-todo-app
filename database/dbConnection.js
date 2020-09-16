@@ -1,27 +1,40 @@
-var Datastore = require('nedb')
+const mongoose = require('mongoose')
 require('dotenv').config()
 
-db = {}
-switch (process.env.ENVIRONMENT) {
+let mongoDatabase
+
+switch(process.env.ENVIRONMENT){
     case 'development':
-        db.todos = new Datastore({ filename: __dirname + "/todos.db" });
-        db.users = new Datastore({ filename: __dirname + "/users.db" });
-        db.todoLists = new Datastore({ filename: __dirname + "/todoLists.db" });
-
-        db.todos.loadDatabase();
-        db.users.loadDatabase();
-        db.todoLists.loadDatabase();
-        break
     case 'test':
-        db.todos = new Datastore({ filename: __dirname + "/test_todos.db", autoload: true });
-        db.users = new Datastore({ filename: __dirname + "/test_users.db", autoload: true });
-        db.todoLists = new Datastore({ filename: __dirname + "/test_todoLists.db", autoload: true });
+        const {MongoMemoryServer} = require('mongodb-memory-server')
+        mongoDatabase = new MongoMemoryServer()
+        break;
+    case 'production':
+    case 'staging':
+        mongoDatabase = {
+            // mongodb+srv://user:password@host/dbname
+            getUri: async () => 
+                `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}/${process.env.DB_NAME}?retryWrites=true&w=majority`
+        }
+        break;
+}
 
-        // db.todos.loadDatabase();
-        // db.users.loadDatabase();
-        // db.todoLists.loadDatabase();
-        break
+async function connect(){
+    let uri = await mongoDatabase.getConnectionString()
+    await mongoose.connect(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useFindAndModify: false,
+        useCreateIndex: true
+    })
+}
+
+async function disconnect(){
+    await mongoDatabase.stop()
+    await mongoose.disconnect()
 }
 
 
-module.exports = db
+module.exports = {
+    connect, disconnect
+}

@@ -1,29 +1,39 @@
-const db = require('../database/dbConnection')
+const mongoose = require('mongoose')
 const permissions = require('../permissions/todoPermissions')
+require('dotenv').config()
+
+const todoListSchema = new mongoose.Schema({
+    title: String,
+    ownerId: String,
+    _id: String
+})
+
+const TodoList = mongoose.model('TodoList', todoListSchema)
 
 module.exports = { 
-    postTodoList(body) {
-        return new Promise((resolve, reject) => {
-            db.todoLists.insert(body, function(err, newTodoList) {
-                if (err) reject(err)
-                resolve(newTodoList)
-            })
-        })
+    async postTodoList(body) {
+        const {title, ownerId} = body
+        const _id = mongoose.Types.ObjectId();
+        const todoList = await TodoList.create({_id, title, ownerId})
+        return todoList._doc
     },
-    getAllTodoLists() {
-        return new Promise((resolve, reject) => {
-            db.todoLists.find({}, function(err, todoLists) {
-                if (err) reject(err)
-                resolve({
-                    todoLists,
-                    authTodos(user) {
-                        return permissions.mapAuthorizedTodos(user, todoLists)
-                    }
-                })
-            })
-        });
+    async getAllTodoLists() {
+        const todoLists = await TodoList.find()
+        return {
+            todoLists: todoLists,
+            authTodos(user) {
+                return permissions.mapAuthorizedTodos(user, todoLists)
+            }
+        }
     },
-    getTodoListById(id) {
+    async getTodoListById(id) {
+        const todoList = await TodoList.findById(id).lean()
+        return {
+            todoList: todoList,
+            isOwner(user) {
+                return permissions.isOwner(user, todoList)
+            }
+        }
         return new Promise((resolve, reject) => {
             db.todoLists.find({ _id: id }, function (err, todoList) {
                 if (err) reject(err)
@@ -36,24 +46,21 @@ module.exports = {
             })
         });
     },
-    updateTodoListTitleById(id, title) {
-        return new Promise((resolve, reject) => {
-            db.todoLists.update({ _id: id }, { $set: { title: title } }, {}, function (err, numUpdated) {
-                if (err) reject(err)
-                resolve(numUpdated)
-            })
-        })
+    async updateTodoListTitleById(id, title) {
+       const updatedTodoList = await TodoList.updateOne({_id: id}, {title: title} )
+       
+       return updatedTodoList.nModified
     },
-    deleteTodoListById(id) {
-        return new Promise((resolve, reject)=>{
-            db.todoLists.remove({ _id: id }, (err, numRemoved) => {
-               if(err) reject (err)
-               resolve(numRemoved)
-            })
-        })
-    },
+    // deleteTodoListById(id) {
+    //     return new Promise((resolve, reject)=>{
+    //         db.todoLists.remove({ _id: id }, (err, numRemoved) => {
+    //            if(err) reject (err)
+    //            resolve(numRemoved)
+    //         })
+    //     })
+    // },
 
-    clear() {
-        db.todoLists.remove({}, { multi: true })
+    async clear() {
+        return await TodoList.deleteMany({})
     }
 }

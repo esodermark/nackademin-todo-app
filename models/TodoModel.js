@@ -1,32 +1,35 @@
-const db = require('../database/dbConnection')
+const mongoose = require('mongoose')
 const permissions = require('../permissions/todoPermissions')
+require('dotenv').config()
+
+const todoSchema = new mongoose.Schema({
+    title: String,
+    done: Boolean,
+    ownerId: String,
+    listId: String,
+    _id: String
+})
+
+const Todo = mongoose.model('Todo', todoSchema)
 
 module.exports = {
-    getAllTodos() {
-        return new Promise((resolve, reject) => {
-            db.todos.find({}, function(err, todos) {
-                if (err) reject(err)
-                resolve({
-                    ...todos,
-                    authTodos(user) {
-                        return permissions.mapAuthorizedTodos(user, todos)
-                    }
-                })
-            })
-        });
+    async getAllTodos() {
+        const todos = await Todo.find()
+        return {
+            ...todos._doc,
+            authTodos(user) {
+                return permissions.mapAuthorizedTodos(user, todos)
+            }
+        }
     },
-    getTodoById(id) {
-        return new Promise((resolve, reject) => {
-            db.todos.find({ _id: id }, function (err, todo) {
-                if (err) reject(err)
-                resolve({
-                    ...todo,
-                    isOwner(user) {
-                       return permissions.isOwner(user, todo[0])
-                    }
-                })
-            })
-        });
+    async getTodoById(id) {
+        const todo = await Todo.findById(id)
+        return {
+            ...todo._doc,
+            isOwner(user) {
+                return permissions.isOwner(user, todo[0])
+            }
+        }
     },
     getTodosByTodoListId(id) {
         return new Promise((resolve, reject) => {
