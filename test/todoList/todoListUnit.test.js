@@ -27,10 +27,6 @@ describe('todoList Unit Tests', () => {
         newTodoList.title.should.equal('Todo List Title')
     })
 
-    it('should fail', function() {
-        (true).should.equal(true)
-    })
-
 
     it('should get all authorized to read todoLists, role == basic', async function() {
         this.test.user.role = 'basic'
