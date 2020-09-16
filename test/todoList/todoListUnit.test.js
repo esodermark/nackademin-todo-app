@@ -27,7 +27,7 @@ describe('todoList Unit Tests', () => {
         newTodoList.title.should.equal('Todo List Title')
     })
 
-    it('should fail', function() {
+    it('should pass', function() {
         (true).should.equal(true)
     })
 
