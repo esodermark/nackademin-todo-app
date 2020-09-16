@@ -40,7 +40,6 @@ describe('todoList Integration Tests', () => {
         .set('Content-Type', `application/json`)
         .send(newTodoList)
         .then(function (res) {
-            expect(res).to.have.status(200);
             expect(res).to.have.status(200)
             expect(res).to.be.json
             expect(res.body).to.have.keys('title', 'ownerId', '_id')

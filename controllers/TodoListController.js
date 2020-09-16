@@ -20,12 +20,9 @@ module.exports = {
             const todoLists = await TodoListModel.getAllTodoLists()
             const authTodoLists = await todoLists.authTodos(req.user)
 
-            for(let i = 0; i < authTodoLists.length; i++) {
-                const todos = await TodoModel.getTodosByTodoListId(authTodoLists[i]._id)
-                authTodoLists[i].todos = todos
-            }
+            authTodoListsWithTodos = await mapTodosOntoTodoLists(authTodoLists)
 
-            res.json(authTodoLists)
+            res.json(authTodoListsWithTodos)
         } catch(error) {
             res.json('Todos could not be generated')
             console.log(error)
@@ -88,4 +85,12 @@ module.exports = {
             console.log(error)
         }
     }
+}
+
+async function mapTodosOntoTodoLists(authTodoLists) {
+    for(let i = 0; i < authTodoLists.length; i++) {
+        const todos = await TodoModel.getTodosByTodoListId(authTodoLists[i]._id)
+        authTodoLists[i].todos = todos
+    }
+    return authTodoLists
 }
