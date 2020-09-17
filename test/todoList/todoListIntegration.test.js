@@ -14,7 +14,7 @@ require('dotenv').config()
 const helper = require('./helper')
 
 
-describe('todoList Integration Tests', () => {
+describe('todoList Integration Tests', function () {
     this.currentTest = {}
     this.timeout(20000); 
 
