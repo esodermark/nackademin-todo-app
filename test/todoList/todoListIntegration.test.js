@@ -16,6 +16,7 @@ const helper = require('./helper')
 
 describe('todoList Integration Tests', () => {
     this.currentTest = {}
+    this.timeout(20000); 
 
     before(async function() {
         await Database.connect()
