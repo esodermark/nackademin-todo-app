@@ -1,6 +1,7 @@
 const TodoListModel = require('../../models/TodoListModel')
 const UserModel = require('../../models/UserModel')
 const TodoModel = require('../../models/TodoModel')
+const Database = require('../../database/dbConnection')
 
 require('chai').should();
 require('dotenv').config()
@@ -11,10 +12,18 @@ const helper = require('./helper')
 describe('todoList Unit Tests', () => {
     this.currentTest = {}
 
+    before(async function() {
+        await Database.connect()
+    })
+
+    // after(async function() {
+    //     await Database.disconnect()
+    // })
+
     beforeEach(async function() {
-        TodoListModel.clear()
-        TodoModel.clear()
-        UserModel.clear()
+        await UserModel.clear()
+        await TodoListModel.clear()
+        // await TodoModel.clear()
 
         const user = await helper.generateTestUser()
         this.currentTest.user = user
@@ -25,10 +34,6 @@ describe('todoList Unit Tests', () => {
         const newTodoList = await helper.generateTodoList(this.test.user._id)
 
         newTodoList.title.should.equal('Todo List Title')
-    })
-
-    it('should pass', function() {
-        (true).should.equal(true)
     })
 
 

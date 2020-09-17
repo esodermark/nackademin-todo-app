@@ -1,74 +1,68 @@
-const db = require('../database/dbConnection')
+const mongoose = require('mongoose')
 const permissions = require('../permissions/todoPermissions')
+require('dotenv').config()
+
+const todoSchema = new mongoose.Schema({
+    title: String,
+    done: String,
+    ownerId: String,
+    listId: String,
+    _id: String
+})
+
+const Todo = mongoose.model('Todo', todoSchema)
 
 module.exports = {
-    getAllTodos() {
-        return new Promise((resolve, reject) => {
-            db.todos.find({}, function(err, todos) {
-                if (err) reject(err)
-                resolve({
-                    ...todos,
-                    authTodos(user) {
-                        return permissions.mapAuthorizedTodos(user, todos)
-                    }
-                })
-            })
-        });
+    async getAllTodos() {
+        const todos = await Todo.find()
+        return {
+            ...todos,
+            authTodos(user) {
+                return permissions.mapAuthorizedTodos(user, todos)
+            }
+        }
     },
-    getTodoById(id) {
-        return new Promise((resolve, reject) => {
-            db.todos.find({ _id: id }, function (err, todo) {
-                if (err) reject(err)
-                resolve({
-                    ...todo,
-                    isOwner(user) {
-                       return permissions.isOwner(user, todo[0])
-                    }
-                })
-            })
-        });
+
+    async getTodoById(id) {
+        const todo = await Todo.findById(id).lean()
+        return {
+            ...todo,
+            isOwner(user) {
+                return permissions.isOwner(user, todo)
+            }
+        }
     },
-    getTodosByTodoListId(id) {
-        return new Promise((resolve, reject) => {
-            db.todos.find({ listId: id }, function(err, todos) {
-                if (err) reject(err)
-                resolve(todos)
-            })
-        });
+
+    async getTodosByTodoListId(id) {
+        const todos = await Todo.find({ listId: id }).lean()
+        return todos
     },
-    postTodo(body) {
-        return new Promise((resolve, reject) => {
-            db.todos.insert(body, function(err, newDoc) {
-                if (err) reject(err)
-                resolve(newDoc)
-            })
-        })
+
+    async postTodo(body) {
+        const {title, done, ownerId, listId} = body
+        const _id = mongoose.Types.ObjectId();
+        const todo = await Todo.create({_id, title, done, ownerId, listId})
+        return todo._doc
     },
-    updateTodoById(id, body) {
-        return new Promise((resolve, reject) => {
-            db.todos.update({ _id: id }, {title: body.title, done: body.done, ownerId: body.ownerId}, {}, function (err, numUpdated) {
-                if (err) reject(err)
-                resolve(numUpdated)
-            })
-        })
+
+    async updateTodoById(id, body) {
+        const {title, done, ownerId} = body
+        const updatedTodo = await Todo.updateOne( {_id: id}, {title, done, ownerId} )
+        return updatedTodo.nModified
     },
-    deleteTodoById(id) {
-        return new Promise((resolve, reject)=>{
-            db.todos.remove({ _id: id }, (err, numRemoved) => {
-               if(err) reject (err)
-               resolve(numRemoved)
-            })
-        })
+
+    async deleteTodoById(id) {
+        const deletedTodo = await Todo.deleteOne( {_id: id} )
+
+        return deletedTodo.deletedCount
     },
-    deleteTodosByTodoListId(id) {
-        return new Promise((resolve, reject)=>{
-            db.todos.remove({ listId: id }, { multi: true }, (err, numRemoved) => {
-               if(err) reject (err)
-               resolve(numRemoved)
-            })
-        })
+    
+    async deleteTodosByTodoListId(id) {
+        const deletedTodo = await Todo.deleteMany( {listId: id} )
+
+        return deletedTodo.deletedCount
     },
-    clear() {
-        db.todos.remove({}, {multi: true})
+    async clear() {
+        return await Todo.deleteMany({})
     }
 }

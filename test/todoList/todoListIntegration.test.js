@@ -1,6 +1,7 @@
 const TodoListModel = require('../../models/TodoListModel')
 const UserModel = require('../../models/UserModel')
 const TodoModel = require('../../models/TodoModel')
+const Database = require('../../database/dbConnection')
 
 const chai = require('chai')
 const chaiHttp = require('chai-http')
@@ -16,10 +17,18 @@ const helper = require('./helper')
 describe('todoList Integration Tests', () => {
     this.currentTest = {}
 
+    before(async function() {
+        await Database.connect()
+    })
+
+    // after(async function() {
+    //     await Database.disconnect()
+    // })
+
     beforeEach(async function() {
-        UserModel.clear()
-        TodoListModel.clear()
-        TodoModel.clear()
+        await UserModel.clear()
+        await TodoListModel.clear()
+        await TodoModel.clear()
 
         const user = await helper.generateTestUser()
         const token = await generateToken()
@@ -42,7 +51,7 @@ describe('todoList Integration Tests', () => {
         .then(function (res) {
             expect(res).to.have.status(200)
             expect(res).to.be.json
-            expect(res.body).to.have.keys('title', 'ownerId', '_id')
+            expect(res.body).to.have.keys('title', 'ownerId', '_id', '__v')
          })
          .catch(function (err) {
             throw err;
@@ -64,7 +73,7 @@ describe('todoList Integration Tests', () => {
         .then(function (res) {
             expect(res).to.have.status(200)
             expect(res).to.be.json
-            expect(res.body[0]).to.have.keys('title', 'ownerId', '_id', 'todos')
+            expect(res.body[0]).to.have.keys('__v',  '_id', 'title', 'ownerId', 'todos')
             expect(res.body.length).to.equal(2)
         })
         .catch(function (err) {
@@ -84,8 +93,8 @@ describe('todoList Integration Tests', () => {
         .then(function (res) {
             expect(res).to.have.status(200)
             expect(res).to.be.json
-            expect(res.body.todoList).to.have.keys(Object.keys(newTodoList))
-            expect(res.body.todos[0]).to.have.keys(Object.keys(todos[0]))
+            expect(res.body.todoList).to.have.keys('title', 'ownerId', '_id', '__v')
+            expect(res.body.todos[0]).to.have.keys('__v',  '_id', 'title', 'done', 'ownerId', 'listId')
         })
         .catch(function (err) {
             throw err;
@@ -95,12 +104,15 @@ describe('todoList Integration Tests', () => {
 
     it('should update a todoList title by id', async function () {
         const newTodoList = await helper.generateTodoList(this.test.user._id)
+        const body = {
+            title: 'New Title'
+        }
 
         await request(app)
         .patch(`/todoList/${newTodoList._id}`)
         .set('Authorization', `Bearer ${this.test.token}`)
         .set('Content-Type', `application/json`)
-        .send(newTodoList)
+        .send(body)
         .then(function (res) {
             expect(res).to.have.status(200)
             expect(res).to.be.json

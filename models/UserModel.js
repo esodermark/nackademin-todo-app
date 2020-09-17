@@ -1,28 +1,27 @@
-const db = require('../database/dbConnection')
+const mongoose = require('mongoose')
+require('dotenv').config()
+
+const userSchema = new mongoose.Schema({
+    username: {type: String, unique: true },
+    password: String,
+    role: String,
+    _id: String
+})
+
+const User = mongoose.model('User', userSchema)
+
 
 module.exports = {
-    createUser(username, password, role) {
-        return new Promise((resolve, reject) => {
-            db.users.insert({
-                username,
-                password,
-                role
-            }, function(err, newUser) {
-                if (err) reject(err)
-                resolve(newUser)
-            })
-        })
+    async createUser(username, password, role) {
+        const _id = mongoose.Types.ObjectId()
+        const user = await User.create({username,password, role, _id})
+        return user._doc
     },
-    loginUser(username) {
-        return new Promise((resolve, reject) => {
-            db.users.find({username: username}, function (err, user) {
-                if (err) reject(err)
-                resolve(user[0])
-            })
-        })
+    async loginUser(username) {
+        return (await User.findOne({username}).exec())._doc
     },
 
-    clear() {
-        db.users.remove({}, {multi: true})
+    async clear() {
+        return await User.deleteMany({})
     }
 }
