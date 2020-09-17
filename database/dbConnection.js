@@ -2,7 +2,6 @@ const mongoose = require('mongoose')
 require('dotenv').config()
 
 let mongoDatabase
-
 switch(process.env.ENVIRONMENT){
     case 'development':
     case 'test':
@@ -20,7 +19,8 @@ switch(process.env.ENVIRONMENT){
 }
 
 async function connect(){
-    let uri = await mongoDatabase.getConnectionString()
+    let uri = await mongoDatabase.getUri()
+    console.log(uri)
     await mongoose.connect(uri, {
         useNewUrlParser: true,
         useUnifiedTopology: true,

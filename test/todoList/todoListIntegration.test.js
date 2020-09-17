@@ -124,24 +124,24 @@ describe('todoList Integration Tests', () => {
     })
 
 
-    // it('should delete a todoList with associated todos by id', async function() {
-    //     const newTodoList = await helper.generateTodoList(this.test.user._id)
-    //     await helper.generateTodos(3, newTodoList._id, this.test.user._id)
+    it('should delete a todoList with associated todos by id', async function() {
+        const newTodoList = await helper.generateTodoList(this.test.user._id)
+        await helper.generateTodos(3, newTodoList._id, this.test.user._id)
 
-    //     await request(app)
-    //     .delete(`/todoList/${newTodoList._id}`)
-    //     .set('Authorization', `Bearer ${this.test.token}`)
-    //     .set('Content-Type', `application/json`)
-    //     .then(function (res) {
-    //         expect(res).to.have.status(200)
-    //         expect(res).to.be.json
-    //         expect(res.body.numTodoListsRemoved).to.equal(1)
-    //         expect(res.body.numTodosRemoved).to.equal(3)
-    //     })
-    //     .catch(function (err) {
-    //         throw err;
-    //      });
-    // })
+        await request(app)
+        .delete(`/todoList/${newTodoList._id}`)
+        .set('Authorization', `Bearer ${this.test.token}`)
+        .set('Content-Type', `application/json`)
+        .then(function (res) {
+            expect(res).to.have.status(200)
+            expect(res).to.be.json
+            expect(res.body.numTodoListsRemoved).to.equal(1)
+            expect(res.body.numTodosRemoved).to.equal(3)
+        })
+        .catch(function (err) {
+            throw err;
+         });
+    })
 })
 
 

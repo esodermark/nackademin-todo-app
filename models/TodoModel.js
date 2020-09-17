@@ -4,7 +4,7 @@ require('dotenv').config()
 
 const todoSchema = new mongoose.Schema({
     title: String,
-    done: Boolean,
+    done: String,
     ownerId: String,
     listId: String,
     _id: String
@@ -45,31 +45,22 @@ module.exports = {
         return todo._doc
     },
 
-    updateTodoById(id, body) {
-        return new Promise((resolve, reject) => {
-            db.todos.update({ _id: id }, {title: body.title, done: body.done, ownerId: body.ownerId}, {}, function (err, numUpdated) {
-                if (err) reject(err)
-                resolve(numUpdated)
-            })
-        })
+    async updateTodoById(id, body) {
+        const {title, done, ownerId} = body
+        const updatedTodo = await Todo.updateOne( {_id: id}, {title, done, ownerId} )
+        return updatedTodo.nModified
     },
 
-    deleteTodoById(id) {
-        return new Promise((resolve, reject)=>{
-            db.todos.remove({ _id: id }, (err, numRemoved) => {
-               if(err) reject (err)
-               resolve(numRemoved)
-            })
-        })
+    async deleteTodoById(id) {
+        const deletedTodo = await Todo.deleteOne( {_id: id} )
+
+        return deletedTodo.deletedCount
     },
     
-    deleteTodosByTodoListId(id) {
-        return new Promise((resolve, reject)=>{
-            db.todos.remove({ listId: id }, { multi: true }, (err, numRemoved) => {
-               if(err) reject (err)
-               resolve(numRemoved)
-            })
-        })
+    async deleteTodosByTodoListId(id) {
+        const deletedTodo = await Todo.deleteMany( {listId: id} )
+
+        return deletedTodo.deletedCount
     },
     async clear() {
         return await Todo.deleteMany({})
