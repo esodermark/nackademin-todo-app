@@ -16,10 +16,6 @@ describe('todoList Unit Tests', () => {
         await Database.connect()
     })
 
-    // after(async function() {
-    //     await Database.disconnect()
-    // })
-
     beforeEach(async function() {
         await UserModel.clear()
         await TodoListModel.clear()

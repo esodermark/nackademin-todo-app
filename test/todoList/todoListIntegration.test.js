@@ -22,10 +22,6 @@ describe('todoList Integration Tests', function () {
         await Database.connect()
     })
 
-    // after(async function() {
-    //     await Database.disconnect()
-    // })
-
     beforeEach(async function() {
         await UserModel.clear()
         await TodoListModel.clear()

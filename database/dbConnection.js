@@ -20,7 +20,6 @@ switch(process.env.ENVIRONMENT){
 
 async function connect(){
     let uri = await mongoDatabase.getUri()
-    console.log(uri)
     await mongoose.connect(uri, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
