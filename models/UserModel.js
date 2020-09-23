@@ -24,6 +24,11 @@ module.exports = {
         const user = await User.findOne({_id: id})
         return user
     },
+    async deleteUserById(id) {
+        const deletedUser = await User.deleteOne({_id: id})
+
+        return deletedUser.deletedCount
+    },
 
     async clear() {
         return await User.deleteMany({})
