@@ -1,6 +1,5 @@
 const TodoListModel = require('../../models/TodoListModel')
 const UserModel = require('../../models/UserModel')
-const TodoModel = require('../../models/TodoModel')
 const Database = require('../../database/dbConnection')
 
 require('chai').should();
