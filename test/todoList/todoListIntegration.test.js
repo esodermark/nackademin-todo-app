@@ -11,7 +11,7 @@ const { expect, request } = chai
 const app = require('../../app')
 require('dotenv').config()
 
-const helper = require('./helper')
+const helper = require('../helper')
 
 
 describe('todoList Integration Tests', function () {

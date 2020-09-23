@@ -6,7 +6,7 @@ const Database = require('../../database/dbConnection')
 require('chai').should();
 require('dotenv').config()
 
-const helper = require('./helper')
+const helper = require('../helper')
 
 
 describe('todoList Unit Tests', () => {
