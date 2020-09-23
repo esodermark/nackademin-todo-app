@@ -33,7 +33,8 @@ module.exports = {
                 numTodosDeleted
             })
         } catch(error) {
-
+            res.json('Could not delete all todo lists')
+            console.log(error)
         }
     }
 }

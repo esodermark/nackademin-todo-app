@@ -45,6 +45,11 @@ module.exports = {
 
         return deletedTodoList.deletedCount
     },
+    async deleteAllTodoListsById(ownerId) {
+        const deletedTodoLists = await TodoList.deleteMany( {ownerId} )
+
+        return deletedTodoLists.deletedCount
+    },
 
     async clear() {
         return await TodoList.deleteMany({})

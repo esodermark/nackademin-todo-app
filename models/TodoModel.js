@@ -62,6 +62,9 @@ module.exports = {
 
         return deletedTodo.deletedCount
     },
+    async deleteAllTodosById(ownerId) {
+
+    },
     async clear() {
         return await Todo.deleteMany({})
     }
