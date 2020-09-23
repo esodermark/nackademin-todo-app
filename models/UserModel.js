@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
     password: String,
     role: String,
     _id: String
-})
+}, { versionKey: false })
 
 const User = mongoose.model('User', userSchema)
 
@@ -21,7 +21,8 @@ module.exports = {
         return (await User.findOne({username}).exec())._doc
     },
     async getUserInformationById(id) {
-        return (await User.findOne({id}).exec())._doc
+        const user = await User.findOne({_id: id})
+        return user
     },
 
     async clear() {

@@ -48,7 +48,7 @@ describe('todoList Integration Tests', function () {
         .then(function (res) {
             expect(res).to.have.status(200)
             expect(res).to.be.json
-            expect(res.body).to.have.keys('title', 'ownerId', '_id', '__v')
+            expect(res.body).to.have.keys('title', 'ownerId', '_id')
          })
          .catch(function (err) {
             throw err;
@@ -70,7 +70,8 @@ describe('todoList Integration Tests', function () {
         .then(function (res) {
             expect(res).to.have.status(200)
             expect(res).to.be.json
-            expect(res.body[0]).to.have.keys('__v',  '_id', 'title', 'ownerId', 'todos')
+
+            expect(res.body[0]).to.have.keys('_id', 'title', 'ownerId', 'todos')
             expect(res.body.length).to.equal(2)
         })
         .catch(function (err) {
@@ -90,8 +91,9 @@ describe('todoList Integration Tests', function () {
         .then(function (res) {
             expect(res).to.have.status(200)
             expect(res).to.be.json
-            expect(res.body.todoList).to.have.keys('title', 'ownerId', '_id', '__v')
-            expect(res.body.todos[0]).to.have.keys('__v',  '_id', 'title', 'done', 'ownerId', 'listId')
+
+            expect(res.body.todoList).to.have.keys('title', 'ownerId', '_id')
+            expect(res.body.todos[0]).to.have.keys('_id', 'title', 'done', 'ownerId', 'listId')
         })
         .catch(function (err) {
             throw err;
@@ -113,6 +115,7 @@ describe('todoList Integration Tests', function () {
         .then(function (res) {
             expect(res).to.have.status(200)
             expect(res).to.be.json
+
             expect(res.body).to.equal(1)
         })
         .catch(function (err) {
@@ -132,6 +135,7 @@ describe('todoList Integration Tests', function () {
         .then(function (res) {
             expect(res).to.have.status(200)
             expect(res).to.be.json
+
             expect(res.body.numTodoListsRemoved).to.equal(1)
             expect(res.body.numTodosRemoved).to.equal(3)
         })
@@ -144,8 +148,8 @@ describe('todoList Integration Tests', function () {
 
 async function generateToken() {
     const loginAttempt = {
-        username: process.env['USER_TEST'],
-        passwordAttempt: process.env['PASSWORD_TEST']
+        username: process.env.USER_TEST,
+        passwordAttempt: process.env.PASSWORD_TEST
     }
 
     const req = 

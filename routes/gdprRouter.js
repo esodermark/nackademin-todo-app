@@ -4,9 +4,9 @@ const auth = require('../middleware/auth')
 
 const router = new Router()
 
-router.get('/userDocumentation', auth.user, GDPRController.getUserDocumentation)
+router.get('/userDocumentation', auth.user, GDPRController.getUserDocumentationCallback)
 
-router.delete('/userDocumentation/:id', auth.user, GDPRController.deleteUserDocumentation)
+// router.delete('/userDocumentation/:id', auth.user, GDPRController.deleteUserDocumentation)
 
 
 

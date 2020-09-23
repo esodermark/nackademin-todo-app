@@ -22,10 +22,10 @@ describe('todoList Unit Tests', () => {
     })
 
     it('should get user information', async function() {
-        const user = await UserModel.getUserInformationById(this.user._id)
-
+        const user = await UserModel.getUserInformationById(this.test.user._id)
+    
         user.should.be.an('object')
-        user.username.should.equal(this.user.username)
-        user.password.should.equal(this.user.password)
+        user.username.should.equal(this.test.user.username)
+        user.password.should.equal(this.test.user.password)
     })
 })

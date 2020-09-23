@@ -48,13 +48,13 @@ describe('todoList Integration Tests', function () {
             expect(res).to.have.status(200)
             expect(res).to.be.json
 
-            expect(res.user).to.be.an('object')
-            expect(res.user).to.have.keys(['username', 'password'])
+            expect(res.body.user).to.be.an('object')
+            expect(res.body.user).to.have.keys(['username', 'password', '_id', 'role'])
 
-            expect(res.todoLists.length).to.equal(2)
-            expect(res.todoLists[0]).to.have.keys(['todos'])
+            expect(res.body.todoLists.length).to.equal(2)
+            expect(res.body.todoLists[0]).to.have.keys(['todos', '_id', 'ownerId', 'title'])
 
-            expect(res.todoLists[0].todos).to.equal(3)
+            expect(res.body.todoLists[0].todos.length).to.equal(3)
         })
         .catch(function (err) {
             throw err;
@@ -62,3 +62,19 @@ describe('todoList Integration Tests', function () {
 
     })
 })
+
+async function generateToken() {
+    const loginAttempt = {
+        username: process.env.USER_TEST,
+        passwordAttempt: process.env.PASSWORD_TEST
+    }
+
+    const req = 
+        await request(app)
+        .post('/login')
+        .send(loginAttempt)
+    
+    const token = req.body.token
+
+    return token
+}

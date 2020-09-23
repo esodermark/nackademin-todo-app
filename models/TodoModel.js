@@ -8,7 +8,7 @@ const todoSchema = new mongoose.Schema({
     ownerId: String,
     listId: String,
     _id: String
-})
+}, { versionKey: false })
 
 const Todo = mongoose.model('Todo', todoSchema)
 

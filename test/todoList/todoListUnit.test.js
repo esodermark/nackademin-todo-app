@@ -18,12 +18,10 @@ describe('todoList Unit Tests', () => {
     beforeEach(async function() {
         await UserModel.clear()
         await TodoListModel.clear()
-        // await TodoModel.clear()
 
         const user = await helper.generateTestUser()
         this.currentTest.user = user
     })
-
 
     it('should create a todoList', async function() {
         const newTodoList = await helper.generateTodoList(this.test.user._id)

@@ -5,8 +5,8 @@ require('dotenv').config()
 const todoListSchema = new mongoose.Schema({
     title: String,
     ownerId: String,
-    _id: String
-})
+    _id: String,
+}, { versionKey: false })
 
 const TodoList = mongoose.model('TodoList', todoListSchema)
 
