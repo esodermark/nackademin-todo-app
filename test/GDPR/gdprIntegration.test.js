@@ -59,7 +59,31 @@ describe('todoList Integration Tests', function () {
         .catch(function (err) {
             throw err;
          });    
+    })
 
+
+    it('should delete all user documentation', async function () {
+        const newTodoList = await helper.generateTodoList(this.test.user._id)
+        const newTodoList2 = await helper.generateTodoList(this.test.user._id)
+
+        await helper.generateTodos(3, newTodoList._id, this.test.user._id)
+        await helper.generateTodos(2, newTodoList2._id, this.test.user._id)
+
+        await request(app)
+        .delete(`/userDocumentation/${this.test.user._id}`)
+        .set('Authorization', `Bearer ${this.test.token}`)
+        .set('Content-Type', `application/json`)
+        .then(function (res) {
+            expect(res).to.have.status(200)
+            expect(res).to.be.json
+
+            expect(res.body.userDeleted).to.equal(1)
+            expect(res.body.todoListsDeleted).to.equal(2)
+            expect(res.body.todosDeleted).to.equal(5)
+        })
+        .catch(function (err) {
+            throw err;
+         });   
     })
 })
 
