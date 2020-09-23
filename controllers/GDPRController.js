@@ -4,7 +4,7 @@ const UserModel = require('../models/UserModel')
 
 module.exports = { 
 
-    getUserDocumentationCallback: async (req, res) => {
+    getUserDocumentationByIdCallback: async (req, res) => {
         try {
             const user = await UserModel.getUserInformationById(req.user._id)
             const todoLists = await TodoListModel.getAllTodoLists()
@@ -19,6 +19,21 @@ module.exports = {
         } catch(error) {
             res.json('Could not get User Documentation')
             console.log(error)
+        }
+    },
+    deleteUserDocumentationByIdCallback: async (req, res) => {
+        try {
+            const numUserDeleted = await UserModel.deleteUserById(req.user._id)
+            const numTodoListsDeleted = await TodoListModel.deleteAllTodoListsById(req.user._id)
+            const numTodosDeleted = await TodoModel.deleteAllTodosById(req.user._id)
+
+            res.json({
+                numUserDeleted,
+                numTodoListsDeleted,
+                numTodosDeleted
+            })
+        } catch(error) {
+
         }
     }
 }

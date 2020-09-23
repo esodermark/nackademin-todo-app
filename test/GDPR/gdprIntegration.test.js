@@ -77,9 +77,9 @@ describe('todoList Integration Tests', function () {
             expect(res).to.have.status(200)
             expect(res).to.be.json
 
-            expect(res.body.userDeleted).to.equal(1)
-            expect(res.body.todoListsDeleted).to.equal(2)
-            expect(res.body.todosDeleted).to.equal(5)
+            expect(res.body.numUserDeleted).to.equal(1)
+            expect(res.body.numTodoListsDeleted).to.equal(2)
+            expect(res.body.numTodosDeleted).to.equal(5)
         })
         .catch(function (err) {
             throw err;
