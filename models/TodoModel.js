@@ -63,7 +63,9 @@ module.exports = {
         return deletedTodo.deletedCount
     },
     async deleteAllTodosById(ownerId) {
+        const deletedTodos = await Todo.deleteMany( {ownerId} )
 
+        return deletedTodos.deletedCount
     },
     async clear() {
         return await Todo.deleteMany({})
