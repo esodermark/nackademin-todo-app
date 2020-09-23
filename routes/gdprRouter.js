@@ -6,7 +6,7 @@ const router = new Router()
 
 router.get('/userDocumentation', auth.user, GDPRController.getUserDocumentationByIdCallback)
 
-// router.delete('/userDocumentation/:id', auth.user, GDPRController.deleteUserDocumentation)
+router.delete('/userDocumentation/:id', auth.user, GDPRController.deleteUserDocumentationByIdCallback)
 
 
 
