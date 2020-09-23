@@ -15,6 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use('/', router.todoRouter)
 app.use('/', router.todoListRouter)
 app.use('/', router.userRouter)
+app.use('/', router.gdprRouter)
 
 
 module.exports = app

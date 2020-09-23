@@ -2,8 +2,9 @@ const UserModel = require('../models/UserModel')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const permissions = require('../permissions/todoPermissions')
+require('dotenv').config()
 
-const secret = 'schhhhh, do not tell'
+const secret = process.env.SECRET
 
 module.exports = {
     createUserCallback: async (req, res) => {

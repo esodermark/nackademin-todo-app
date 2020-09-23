@@ -1,6 +1,6 @@
-const TodoListModel = require('../../models/TodoListModel')
-const UserModel = require('../../models/UserModel')
-const TodoModel = require('../../models/TodoModel')
+const TodoListModel = require('../models/TodoListModel')
+const UserModel = require('../models/UserModel')
+const TodoModel = require('../models/TodoModel')
 
 async function generateTestUser() {
     const username = process.env['USER_TEST']

@@ -4,7 +4,6 @@ module.exports = {
     
     getAllTodosCallback: async (req, res) => {
         try {
-            // res
             const todos = await TodoModel.getAllTodos()
             res.json(todos.authTodos(req.user))
         } catch(error) {
@@ -14,9 +13,8 @@ module.exports = {
     },
     getTodoByIdCallback: async (req, res) => {
         try {
-            // req
             const id = req.params.id
-            // res
+
             const todo = await TodoModel.getTodoById(id)
             todo.isOwner(req.user) 
             ? res.json(todo).status(200) 
@@ -28,13 +26,12 @@ module.exports = {
     },
     postTodoCallback: async (req, res) => {
         try {
-            // req
             const body = {
                 title: req.body.title ? req.body.title : '',
                 done: req.body.done ? req.body.done : false,
                 ownerId: req.user._id
             }
-            // res
+
             const newTodo = await TodoModel.postTodo(body)
             res.json(`Todo '${newTodo.title}' was created`)    
         } catch(error) { 
@@ -44,14 +41,13 @@ module.exports = {
     },
     updateTodoByIdCallback: async (req, res) => {
         try {
-            // req
             const id = req.params.id
             const body = {
                 title: req.body.title ? req.body.title : '',
                 done: req.body.done ? req.body.done : false,
                 ownerId: req.user._id
             }
-            // res
+
             const todo = await TodoModel.getTodoById(id)
             if(todo.isOwner(req.user)) {
                 const numUpdated = await TodoModel.updateTodoById(id, body)
@@ -66,9 +62,8 @@ module.exports = {
     },
     deleteTodoByIdCallback: async (req, res) => {
         try {
-            // req
             const id = req.params.id
-            // res
+
             const todo = await TodoModel.getTodoById(id)
             if(todo.isOwner(req.user)) {
                 const numDeleted = await TodoModel.deleteTodoById(id)
@@ -80,5 +75,5 @@ module.exports = {
             res.json('Todo could not be deleted')
             console.log(error)
         }
-    },
+    }
 }

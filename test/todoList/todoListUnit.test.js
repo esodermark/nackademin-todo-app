@@ -1,12 +1,11 @@
 const TodoListModel = require('../../models/TodoListModel')
 const UserModel = require('../../models/UserModel')
-const TodoModel = require('../../models/TodoModel')
 const Database = require('../../database/dbConnection')
 
 require('chai').should();
 require('dotenv').config()
 
-const helper = require('./helper')
+const helper = require('../helper')
 
 
 describe('todoList Unit Tests', () => {
@@ -16,19 +15,13 @@ describe('todoList Unit Tests', () => {
         await Database.connect()
     })
 
-    // after(async function() {
-    //     await Database.disconnect()
-    // })
-
     beforeEach(async function() {
         await UserModel.clear()
         await TodoListModel.clear()
-        // await TodoModel.clear()
 
         const user = await helper.generateTestUser()
         this.currentTest.user = user
     })
-
 
     it('should create a todoList', async function() {
         const newTodoList = await helper.generateTodoList(this.test.user._id)
@@ -91,6 +84,16 @@ describe('todoList Unit Tests', () => {
         const numRemoved = await TodoListModel.deleteTodoListById(newTodoList._id)
 
         numRemoved.should.equal(1)
+    })
+
+
+    it('should delete all TodoLists by user id', async function() {
+        await helper.generateTodoList(this.test.user._id)
+        await helper.generateTodoList(this.test.user._id)
+
+        const numDeletedTodoLists = await TodoListModel.deleteAllTodoListsById(this.test.user._id)
+
+        numDeletedTodoLists.should.equal(2)
     })
 })
 

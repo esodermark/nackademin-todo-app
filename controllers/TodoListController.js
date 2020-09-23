@@ -1,4 +1,3 @@
-const auth = require('../middleware/auth')
 const TodoListModel = require('../models/TodoListModel')
 const TodoModel = require('../models/TodoModel')
 

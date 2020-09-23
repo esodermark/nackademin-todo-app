@@ -5,8 +5,8 @@ require('dotenv').config()
 const todoListSchema = new mongoose.Schema({
     title: String,
     ownerId: String,
-    _id: String
-})
+    _id: String,
+}, { versionKey: false })
 
 const TodoList = mongoose.model('TodoList', todoListSchema)
 
@@ -44,6 +44,11 @@ module.exports = {
         const deletedTodoList = await TodoList.deleteOne( {_id: id} )
 
         return deletedTodoList.deletedCount
+    },
+    async deleteAllTodoListsById(ownerId) {
+        const deletedTodoLists = await TodoList.deleteMany( {ownerId} )
+
+        return deletedTodoLists.deletedCount
     },
 
     async clear() {

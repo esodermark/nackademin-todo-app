@@ -8,7 +8,7 @@ const todoSchema = new mongoose.Schema({
     ownerId: String,
     listId: String,
     _id: String
-})
+}, { versionKey: false })
 
 const Todo = mongoose.model('Todo', todoSchema)
 
@@ -61,6 +61,11 @@ module.exports = {
         const deletedTodo = await Todo.deleteMany( {listId: id} )
 
         return deletedTodo.deletedCount
+    },
+    async deleteAllTodosById(ownerId) {
+        const deletedTodos = await Todo.deleteMany( {ownerId} )
+
+        return deletedTodos.deletedCount
     },
     async clear() {
         return await Todo.deleteMany({})
