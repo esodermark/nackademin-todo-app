@@ -85,6 +85,16 @@ describe('todoList Unit Tests', () => {
 
         numRemoved.should.equal(1)
     })
+
+
+    it('should delete all TodoLists by user id', async function() {
+        await helper.generateTodoList(this.test.user._id)
+        await helper.generateTodoList(this.test.user._id)
+
+        const numDeletedTodoLists = await TodoListModel.deleteAllTodoListsById(this.test.user._id)
+
+        numDeletedTodoLists.should.equal(2)
+    })
 })
 
 
