@@ -20,6 +20,9 @@ module.exports = {
     async loginUser(username) {
         return (await User.findOne({username}).exec())._doc
     },
+    async getUserInformationById(id) {
+        return (await User.findOne({id}).exec())._doc
+    },
 
     async clear() {
         return await User.deleteMany({})
