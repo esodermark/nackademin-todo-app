@@ -33,10 +33,8 @@ module.exports = {
                 ownerId: req.user._id
             }
 
-            console.log(req.body)
-
             const newTodo = await TodoModel.postTodo(body)
-            res.json(`Todo '${newTodo.title}' was created`)    
+            res.json(`Todo '${newTodo.title}' was created`)   
         } catch(error) { 
             res.json('Todo could not be created')
             console.log(error)
