@@ -4,7 +4,7 @@ require('dotenv').config()
 
 const todoSchema = new mongoose.Schema({
     title: String,
-    done: String,
+    done: Boolean,
     ownerId: String,
     listId: String,
     _id: String

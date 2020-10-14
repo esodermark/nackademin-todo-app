@@ -29,8 +29,11 @@ module.exports = {
             const body = {
                 title: req.body.title ? req.body.title : '',
                 done: req.body.done ? req.body.done : false,
+                listId: req.body.listId,
                 ownerId: req.user._id
             }
+
+            console.log(req.body)
 
             const newTodo = await TodoModel.postTodo(body)
             res.json(`Todo '${newTodo.title}' was created`)    
